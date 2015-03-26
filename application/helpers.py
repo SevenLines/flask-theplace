@@ -41,7 +41,7 @@ def get_items(data):
             id = int(m.group(1))
             pages = int(m.group(2))
 
-    regexp = re.compile("(.*?)_s(.\w+)")
+    regexp = re.compile(r"(.*?)_s(\.\w+)")
 
 
     return {

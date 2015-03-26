@@ -3,7 +3,7 @@
   margin: 0.25em;
   border: 1px solid grey;
   border-radius: 8px;
-  max-height: 150px;
+  height: 150px;
   min-width: 20px;
   box-shadow: 0 0 4px #EEEEEE; }
 
@@ -19,10 +19,20 @@
   bottom: 0;
   position: fixed;
   right: 0;
-  background-color: #000000;
   padding: 0.5em;
   width: 35%;
-  text-align: center; }
+  text-align: center;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s; }
   .right-column #image-preview {
     max-width: 100%;
     max-height: 100%; }
+  .right-column .load-icon {
+    display: none; }
+  .right-column.loading img {
+    display: none; }
+  .right-column.loading .load-icon {
+    display: block; }

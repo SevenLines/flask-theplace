@@ -4,10 +4,9 @@
     margin: 0.25em;
     border: 1px solid grey;
     border-radius: 8px;
-    max-height: 150px;
+    height: 150px;
     min-width: 20px;
     box-shadow: 0 0 4px #EEEEEE;
-
   }
 }
 
@@ -25,13 +24,31 @@
   bottom: 0;
   position: fixed;
   right: 0;
-  background-color: #000000;
   padding: 0.5em;
   width: 35%;
   text-align: center;
+
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+
   #image-preview {
     max-width: 100%;
     max-height: 100%;
+  }
+  .load-icon {
+    display: none;
+  }
+  &.loading {
+    img {
+      display: none;
+    }
+    .load-icon {
+      display: block;
+    }
+    //    max-width: 0;
   }
 }
 
