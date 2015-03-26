@@ -15,7 +15,19 @@
     border-radius: 8px;
     height: 150px;
     min-width: 20px;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
     box-shadow: 0 0 4px #EEEEEE; }
+    #images img:hover {
+      box-shadow: 0 0 4px silver; }
+
+#load-progress {
+  width: 100%;
+  text-align: center;
+  padding-bottom: 20px; }
 
 #categories {
   position: fixed; }
@@ -51,14 +63,21 @@
     -o-transition: all 0.3s;
     transition: all 0.3s; }
   .right-column.hovered {
-    background-color: #000000;
     width: 100%; }
   .right-column #image-preview {
     max-width: 100%;
     max-height: 100%; }
   .right-column .load-icon {
+    font-size: 80px;
     display: none;
-    color: #eee; }
+    color: #eee;
+    top: 50%;
+    left: 50%;
+    margin-left: -40px;
+    margin-top: -40px;
+    position: absolute; }
+  .right-column.loading .hover-area {
+    display: none; }
   .right-column.loading img {
     display: none; }
   .right-column.loading .load-icon {
