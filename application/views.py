@@ -63,6 +63,7 @@ def download():
         f.write(r.read())
     return ""
 
+
 @app.route('/remove', methods=["POST", ])
 def remove():
     url = request.form.get('url')
@@ -84,7 +85,6 @@ def query_categories():
 
 @app.route('/')
 def index():
-
     upgrade()
     if not Category.query.count():
         return redirect(url_for("update"))

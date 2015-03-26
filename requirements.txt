@@ -4,6 +4,7 @@ flask-assets
 flask-migrate
 cssmin
 yuicompressor
+pyyaml
 lxml
 cssselect
 gunicorn
