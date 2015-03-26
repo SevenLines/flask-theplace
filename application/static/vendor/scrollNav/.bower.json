@@ -1,0 +1,49 @@
+{
+  "name": "scrollNav",
+  "version": "2.6.0",
+  "author": {
+    "name": "James Wilson",
+    "email": "jimmynotjim@me.com",
+    "url": "http://jimmynotjim.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jimmynotjim/scrollNav.git"
+  },
+  "main": [
+    "./dist/jquery.scrollNav.min.js"
+  ],
+  "dependencies": {
+    "jquery": "~1.9.*"
+  },
+  "ignore": [
+    "node_modules",
+    "libs",
+    "src",
+    "test",
+    ".*",
+    "*.json",
+    "CONTRIBUTING.md",
+    "*.txt",
+    "Gruntfile.js"
+  ],
+  "keywords": [
+    "scrollnav",
+    "jquery",
+    "navigation",
+    "scrolling",
+    "sticky nav",
+    "scrolling nav"
+  ],
+  "homepage": "https://github.com/jimmynotjim/scrollNav",
+  "_release": "2.6.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.6.0",
+    "commit": "2cb5213a1f223b6331aea1135628405d48551af0"
+  },
+  "_source": "git://github.com/jimmynotjim/scrollNav.git",
+  "_target": "~2.6.0",
+  "_originalSource": "scrollNav",
+  "_direct": true
+}

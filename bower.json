@@ -14,13 +14,14 @@
   ],
   "dependencies": {
     "bootstrap": "~3.3.4",
-    "jquery": "~1",
+    "jquery": "~1.11",
     "fontawesome": "~4.3.0",
     "socket.io": "~0",
     "lodash": "~3.5.0",
     "jquery.lazyload": "~1.9.4",
     "select2": "~4.0",
     "jquery.cookie": "~1.4.1",
-    "fullpage.js": "~2.6.2"
+    "fullpage.js": "~2.6.2",
+    "scrollNav": "~2.6.0"
   }
 }

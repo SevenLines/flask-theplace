@@ -10,16 +10,35 @@
 
 {% block body %}
 
-    <div class="col-md-6 left-column">
-        <div id="images"></div>
-    </div>
-    <div class="right-column">
-        <img  id="image-preview"/>
-        <br/>
-        <i class="fa fa-spinner fa-pulse fa-5x load-icon"></i>
+    <div class="row">
+        <div class="left-column">
+            <div id="pages"></div>
+            <div id="images"></div>
+        </div>
+        <div class="right-column">
+            <div class="hover-area"></div>
+            <img id="image-preview"/>
+            <i class="fa fa-spinner fa-pulse fa-5x load-icon"></i>
+        </div>
     </div>
 
     <script>
+
+        (function () {
+            var lastPosX = -1;
+            $(".hover-area").hover(function (e) {
+                lastPosX = e.clientX;
+            }, function (e) {
+                $(".right-column").toggleClass("hovered", false);
+            }).on("mousemove", function (e) {
+                if (lastPosX - e.clientX > 50) {
+                    $(".right-column").toggleClass("hovered", false);
+                } else if (e.clientX - lastPosX > 5) {
+                    $(".right-column").toggleClass("hovered", true);
+                }
+            });
+        })();
+
         $(document).ready(function () {
             var currentPage = 1;
             var lastPage = currentPage;
@@ -56,6 +75,8 @@
                     fetchMore(pages[currentPage + 1], function (response) {
                         currentPage++;
                     });
+                    lastPage = currentPage;
+                    $(window).trigger('scroll');
                 });
             }
 

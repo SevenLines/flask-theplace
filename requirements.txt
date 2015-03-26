@@ -3,7 +3,11 @@ flask-sqlalchemy
 flask-socketio
 flask-admin
 flask-login
+flask-assets
 flask-migrate
+jsmin
+cssmin
+yuicompressor
 lxml
 cssselect
 sqlalchemy

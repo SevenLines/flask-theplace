@@ -1,4 +1,16 @@
+$pages-bar-width: 50px;
+
+#pages {
+  width: $pages-bar-width;
+  float: left;
+  top: 0;
+  bottom: 0;
+  position: fixed;
+  box-shadow: 4px 0 8px #eee;
+}
+
 #images {
+  margin-left: $pages-bar-width + 10px;
   img {
     padding: 0.5em;
     margin: 0.25em;
@@ -20,13 +32,15 @@
 }
 
 .right-column {
-  top: 50px;
+  top: 60px;
   bottom: 0;
   position: fixed;
   right: 0;
   padding: 0.5em;
   width: 35%;
   text-align: center;
+  box-shadow: -4px 0 8px #eee;
+  background-color: #FFF;
 
   -webkit-transition: all 0.3s;
   -moz-transition: all 0.3s;
@@ -34,13 +48,37 @@
   -o-transition: all 0.3s;
   transition: all 0.3s;
 
+  .hover-area {
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    position: absolute;
+
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+  }
+
+  &.hovered {
+    background-color: #000000;
+    .hover-area {
+      //      left: 50%;
+    }
+    width: 100%;
+  }
+
   #image-preview {
     max-width: 100%;
     max-height: 100%;
   }
   .load-icon {
     display: none;
+    color: #eee;
   }
+
   &.loading {
     img {
       display: none;

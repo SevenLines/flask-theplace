@@ -6,22 +6,29 @@ import re
 __author__ = 'm'
 
 urls = {
-    "root": "http://www.theplace.ru/",
-    "photos": "http://www.theplace.ru/photos/",
-    "list": "http://www.theplace.ru/photos/?s_id=0",
+    "theplace": {
+        "root": "http://www.theplace.ru/",
+        "photos": "http://www.theplace.ru/photos/",
+        "paths": [
+            "http://www.theplace.ru/photos/?s_id=0",
+            "http://www.theplace.ru/photos/?s_id=1",
+            "http://www.theplace.ru/photos/?s_id=2",
+            "http://www.theplace.ru/photos/?s_id=3",
+        ],
+    }
 }
 
 
-def get_categories(data):
+def get_categories(data, source):
     root = html.fromstring(data)
     out = [{"name": item.text,
-            "href": urljoin(urls['photos'], item.get("href"))}
+            "href": urljoin(urls["theplace"]['photos'], item.get("href"))}
            for item in root.xpath('//table[@id="models_list"]//a')]
 
     return out
 
 
-def get_items(data):
+def get_items(data, source):
     root = html.fromstring(data)
     gallery = root.find_class('gallery-pics-list')
     if len(gallery):
@@ -43,10 +50,9 @@ def get_items(data):
 
     regexp = re.compile(r"(.*?)_s(\.\w+)")
 
-
     return {
-        'images': [{"thumbnail": urljoin(urls['root'], img.get('src')),
-                    "src": urljoin(urls['root'], regexp.sub(r'\1\2', img.get('src')))} for img in images],
+        'images': [{"thumbnail": urljoin(urls["theplace"]['root'], img.get('src')),
+                    "src": urljoin(urls["theplace"]['root'], regexp.sub(r'\1\2', img.get('src')))} for img in images],
         'id': id,
-        'pages': [urljoin(urls['root'], "/photos/gallery.php?id=%d&page=%d") % (id, i) for i in xrange(1, pages + 1)],
+        'pages': [urljoin(urls["theplace"]['root'], "/photos/gallery.php?id=%d&page=%d") % (id, i) for i in xrange(1, pages + 1)],
     }

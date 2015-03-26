@@ -6,6 +6,7 @@ from application.models import db
 
 import application.views
 import application.models
+import application.assets
 
 migrate = Migrate(app, db, directory="db/migrations")
 manager = Manager(app)
