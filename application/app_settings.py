@@ -11,13 +11,12 @@ try:
         config = yaml.load(f)
 except BaseException as e:
     print e
+    raise e
 
 app = Flask(__name__)
 app.debug = True
 app.threaded = True
 app.config['SECRET_KEY'] = "!secret"
-
-print config
 
 if 'SAVE_PATH' in config:
     save_path = config['SAVE_PATH']
@@ -27,8 +26,6 @@ if 'SAVE_PATH' in config:
         save_path = save_path.get('unix', '.')
 else:
     save_path = '.'
-
-print save_path
 
 app.config['SAVE_PATH'] = save_path
 

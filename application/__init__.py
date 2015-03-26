@@ -1,4 +1,3 @@
-import yaml
 import application.views
 import application.models
 import application.app_settings

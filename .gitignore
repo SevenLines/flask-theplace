@@ -1,3 +1,4 @@
 .idea/
 *.pyc
 .webassets-cache
+db/database.db

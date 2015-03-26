@@ -2,8 +2,9 @@ import json
 import os
 from urllib2 import urlopen
 import urllib2
-from flask import render_template, request, redirect, jsonify
+from flask import render_template, request, redirect, jsonify, url_for
 import flask
+from flask.ext.migrate import upgrade
 from application.app_settings import app
 from application.helpers import get_categories, get_items, urls, get_image_path
 from application.models import db, Category
@@ -83,7 +84,8 @@ def query_categories():
 
 @app.route('/')
 def index():
-    categories = Category.query
-    return render_template("theplace/index.html", **{
-        'categories': json.dumps(list([c.serialize() for c in categories]))
-    })
+
+    upgrade()
+    if not Category.query.count():
+        return redirect(url_for("update"))
+    return render_template("theplace/index.html")
