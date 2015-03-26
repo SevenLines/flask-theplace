@@ -1,11 +1,16 @@
 The Place
 =========
 
+Convenient [http://www.theplace.ru]() scrapper
+
+## Usage ##
+
+
 Run install script
     
     ./install
 
-make sure that you use current virtual environment
+make sure that you use right virtual environment
 
     . env/bin/activate
     
@@ -13,6 +18,6 @@ run program
 
     python theplace.py
     
-or if you prefer **gunicorn**:
+Or if you prefer **gunicorn**:
 
     ./theplace_gunicorn
