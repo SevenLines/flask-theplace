@@ -2,7 +2,8 @@ flask
 flask-sqlalchemy
 flask-assets
 flask-migrate
-cssmin
+cssmingi
 yuicompressor
 lxml
 cssselect
+gunicorn

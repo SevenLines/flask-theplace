@@ -22,7 +22,9 @@
     border-radius: 8px;
     border: 1px solid grey;
     z-index: 0; }
-    #images .image .saveme {
+    #images .image .removeme {
+      display: none; }
+    #images .image .saveme, #images .image .removeme {
       -webkit-transition: all 0.3s;
       -moz-transition: all 0.3s;
       -ms-transition: all 0.3s;
@@ -37,7 +39,7 @@
       right: 0;
       bottom: 0;
       text-align: center; }
-      #images .image .saveme .fa-pulse {
+      #images .image .saveme .fa-pulse, #images .image .removeme .fa-pulse {
         display: none;
         font-size: 60px;
         position: absolute;
@@ -45,18 +47,23 @@
         left: 50%;
         margin-top: -30px;
         margin-left: -30px; }
-      #images .image .saveme:hover {
+      #images .image .saveme:hover, #images .image .removeme:hover {
         opacity: 0.85; }
     #images .image.exists {
       opacity: 1; }
       #images .image.exists .saveme {
+        display: none;
         background-color: yellowgreen;
         color: #ffffff; }
-    #images .image.loading .saveme {
+      #images .image.exists .removeme {
+        display: block;
+        background-color: red;
+        color: #ffffff; }
+    #images .image.loading .saveme, #images .image.loading .removeme {
       top: 0; }
-      #images .image.loading .saveme .fa-save {
+      #images .image.loading .saveme .fa-save, #images .image.loading .saveme .fa-remove, #images .image.loading .removeme .fa-save, #images .image.loading .removeme .fa-remove {
         display: none; }
-      #images .image.loading .saveme .fa-pulse {
+      #images .image.loading .saveme .fa-pulse, #images .image.loading .removeme .fa-pulse {
         display: inline-block; }
   #images img {
     height: 150px;

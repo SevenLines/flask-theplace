@@ -27,7 +27,10 @@ $pages-bar-width: 50px;
     border: 1px solid grey;
     z-index: 0;
     //    padding: 0.5em;
-    .saveme {
+    .removeme {
+      display: none;
+    }
+    .saveme, .removeme {
       .fa-pulse {
         display: none;
         font-size: 60px;
@@ -59,14 +62,20 @@ $pages-bar-width: 50px;
     &.exists {
       opacity: 1;
       .saveme {
+        display: none;
         background-color: yellowgreen;
+        color: #ffffff;
+      }
+      .removeme {
+        display: block;
+        background-color: red;
         color: #ffffff;
       }
     }
     &.loading {
-      .saveme {
+      .saveme, .removeme {
         top: 0;
-        .fa-save {
+        .fa-save, .fa-remove {
           display: none;
         }
         .fa-pulse {

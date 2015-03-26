@@ -4,7 +4,7 @@ from urlparse import urljoin
 from lxml import html
 import re
 from werkzeug.utils import secure_filename
-from application import app
+from application.app_settings import app
 from application.models import Category
 
 __author__ = 'm'

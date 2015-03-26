@@ -4,9 +4,7 @@ from urllib2 import urlopen
 import urllib2
 from flask import render_template, request, redirect, jsonify
 import flask
-from flask.helpers import url_for
-from werkzeug.utils import secure_filename
-from application import app, helpers
+from application.app_settings import app
 from application.helpers import get_categories, get_items, urls, get_image_path
 from application.models import db, Category
 
@@ -51,7 +49,7 @@ def download():
     name = request.form.get('name', '_')
 
     r = urllib2.Request(url, None,
-                        headers={'User-Agent': 'I just wanna get some of yout picrutes. Thanks for your work',
+                        headers={'User-Agent': 'I just wanna get some of your pictures. Thanks for your work',
                                  'Referer': 'localhost'})
     r = urlopen(r)
 
@@ -61,9 +59,19 @@ def download():
         os.makedirs(os.path.dirname(filename))
 
     with open(filename, mode='wb') as f:
-        print(filename)
         f.write(r.read())
     return ""
+
+@app.route('/remove', methods=["POST", ])
+def remove():
+    url = request.form.get('url')
+    name = request.form.get('name', '_')
+    filename = get_image_path(url, name)
+    if os.path.exists(filename):
+        os.remove(filename)
+        return ""
+    else:
+        flask.abort(404)
 
 
 @app.route('/categories/query')

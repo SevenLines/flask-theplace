@@ -1,6 +1,6 @@
 import os
 from flask.ext.sqlalchemy import SQLAlchemy
-from application import app, ROOT_DIR
+from application.app_settings import app, ROOT_DIR
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///%s' % os.path.join(ROOT_DIR, 'db/database.db')
 db = SQLAlchemy(app)

@@ -32,8 +32,12 @@ function PhotosModel(settings) {
 		var pages = [];
 
 		var template = _.template(['<a class="image <%= exists %>" href="<%= src %>">',
-			'<div class="<%= cls %>">',
+			'<div class="saveme">',
 			'<i class="fa fa-save"></i>',
+			'<i class="fa fa-spinner fa-pulse"></i>',
+			'</div>',
+			'<div class="removeme">',
+			'<i class="fa fa-remove"></i>',
 			'<i class="fa fa-spinner fa-pulse"></i>',
 			'</div>',
 			'<img data-original="<%= thumbnail %>" />',
@@ -113,6 +117,20 @@ function PhotosModel(settings) {
 						});
 						return false;
 					});
+
+					$aimg.find(".removeme").click(function (e) {
+						$aimg.addClass("loading");
+						$.post(settings.urls.remove, {
+							url : $(e.currentTarget).parent()[0].href,
+							name: self.currentCategoryName
+						}).done(function () {
+							$aimg.removeClass("exists");
+						}).always(function () {
+							$aimg.removeClass("loading");
+						});
+						return false;
+					});
+
 					$images.append($aimg);
 				});
 				if (ondone) {

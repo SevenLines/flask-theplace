@@ -1,37 +1,38 @@
-{%- extends "index.html" %}
+{% extends "index.html" %}
 {%- import "macros.html" as macros %}
 {%- block menu %}
-    <div class="navbar-form pull-left">
-        <select style="min-width: 200px" name="query" id="theplace_search_query" class="form-control">
-        </select>
-    </div>
+<div class="navbar-form pull-left">
+    <select style="min-width: 200px" name="query" id="theplace_search_query" class="form-control">
+    </select>
+</div>
 {%- endblock %}
 
 {%- block body %}
 
-    <div class="row">
-        <div class="left-column">
-            <div id="pages"></div>
-            <div id="images"></div>
-            <div id="load-progress">
-                <i class="fa fa-spinner fa-pulse fa-5x"></i>
-            </div>
-        </div>
-        <div class="right-column">
-            <div class="hover-area"></div>
-            <img id="image-preview"/>
-            <i class="fa fa-spinner fa-pulse fa-5x load-icon"></i>
+<div class="row">
+    <div class="left-column">
+        <div id="pages"></div>
+        <div id="images"></div>
+        <div id="load-progress">
+            <i class="fa fa-spinner fa-pulse fa-5x"></i>
         </div>
     </div>
+    <div class="right-column">
+        <div class="hover-area"></div>
+        <img id="image-preview"/>
+        <i class="fa fa-spinner fa-pulse fa-5x load-icon"></i>
+    </div>
+</div>
 
-    <script>
-        new PhotosModel({
-            urls: {
-                images          : '{{ url_for("images") }}',
-                query_categories: "{{ url_for("query_categories") }}",
-                download: "{{ url_for("download") }}"
-            }
-        })
-    </script>
+<script>
+    new PhotosModel({
+        urls: {
+            images          : "{{ url_for("images") }}",
+            query_categories: "{{ url_for("query_categories") }}",
+            download        : "{{ url_for("download") }}",
+            remove          : "{{ url_for("remove") }}"
+        }
+    })
+</script>
 
 {%- endblock %}
