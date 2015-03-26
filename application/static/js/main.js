@@ -4,6 +4,7 @@
 
 function PhotosModel(settings) {
 	var self = this;
+	self.currentCategoryName = '';
 
 	(function () {
 		var lastPosX = -1;
@@ -30,7 +31,12 @@ function PhotosModel(settings) {
 		var lastPage = currentPage;
 		var pages = [];
 
-		var template = _.template('<a class="image" href="<%= src %>"><img data-original="<%= thumbnail %>" /></a>');
+		var template = _.template(['<a class="image <%= exists %>" href="<%= src %>">',
+			'<div class="<%= cls %>">',
+			'<i class="fa fa-save"></i>',
+			'</div>',
+			'<img data-original="<%= thumbnail %>" />',
+			'</a>'].join(''));
 
 		function setImage(event) {
 			var image = document.getElementById("image-preview");
@@ -57,12 +63,12 @@ function PhotosModel(settings) {
 				$.cookie("lastCategory", $('#theplace_search_query').select2('val'), {expires: 7, path: '/'});
 			}
 			$("#images").empty();
-			fetchMore(url, function () {
+			fetchMore(url, function (response) {
+				self.currentCategoryName = response.name;
 				fetchMore(pages[currentPage + 1], function (response) {
 					currentPage++;
 				});
 				lastPage = currentPage;
-				$(window).trigger('scroll');
 			});
 		}
 
@@ -76,7 +82,6 @@ function PhotosModel(settings) {
 			}).done(function (response) {
 				var first = false;
 				if (pages.length == 0) {
-					first = true;
 					pages = response.data.pages;
 					$("html, body").animate({scrollTop: 0}, "slow");
 				}
@@ -85,7 +90,9 @@ function PhotosModel(settings) {
 				response.data.images.forEach(function (item) {
 					var $aimg = $(template({
 						src      : item.src,
-						thumbnail: item.thumbnail
+						thumbnail: item.thumbnail,
+						cls      : "saveme",
+						exists   : item.exists ? 'exists' : ''
 					}));
 					var $img = $aimg.find("img");
 					$img.show().lazyload({
@@ -93,15 +100,21 @@ function PhotosModel(settings) {
 						effect   : "fadeIn"
 					});
 					$aimg.on("click", setImage);
+					$aimg.find(".saveme").click(function (e) {
+						$.post(settings.urls.download, {
+							url : $(e.currentTarget).parent()[0].href,
+							name: self.currentCategoryName
+						}).done(function () {
+							$aimg.addClass("exists");
+						});
+						return false;
+					});
 					$images.append($aimg);
 				});
-				$images.append("<hr\>");
 				if (ondone) {
 					ondone(response);
 				}
-				if (first) {
-					$("html, body").animate({scrollTop: 1}, 0);
-				}
+				$(window).trigger('scroll');
 				$("#load-progress").hide();
 			});
 		}
@@ -150,7 +163,6 @@ function PhotosModel(settings) {
 
 		if ($.cookie("lastCategory") && $.cookie("lastCategory") != "null") {
 			fetchInit($.cookie("lastCategory"));
-			console.log($.cookie("lastCategory"));
 		}
 
 		$(window).scroll(onScroll);

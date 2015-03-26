@@ -30,7 +30,8 @@
         new PhotosModel({
             urls: {
                 images          : '{{ url_for("images") }}',
-                query_categories: "{{ url_for("query_categories") }}"
+                query_categories: "{{ url_for("query_categories") }}",
+                download: "{{ url_for("download") }}"
             }
         })
     </script>

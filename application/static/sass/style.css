@@ -8,18 +8,45 @@
 
 #images {
   margin-left: 60px; }
-  #images img {
-    padding: 0.5em;
+  #images .section {
+    overflow: hidden;
+    border-bottom: 2px groove #eee;
+    padding-bottom: 0.5em;
+    margin-bottom: 0.5em; }
+  #images .image {
+    position: relative;
+    display: block;
+    float: left;
     margin: 0.25em;
-    border: 1px solid grey;
+    overflow: hidden;
     border-radius: 8px;
+    border: 1px solid grey;
+    z-index: 0; }
+    #images .image .saveme {
+      -webkit-transition: all 0.3s;
+      -moz-transition: all 0.3s;
+      -ms-transition: all 0.3s;
+      -o-transition: all 0.3s;
+      transition: all 0.3s;
+      z-index: 1;
+      background-color: white;
+      opacity: 0.55;
+      border-top: 1px solid grey;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      text-align: center; }
+      #images .image .saveme:hover {
+        opacity: 0.85; }
+    #images .image.exists {
+      opacity: 1; }
+      #images .image.exists .saveme {
+        background-color: yellowgreen;
+        color: #ffffff; }
+  #images img {
     height: 150px;
     min-width: 20px;
-    -webkit-transition: all 0.3s;
-    -moz-transition: all 0.3s;
-    -ms-transition: all 0.3s;
-    -o-transition: all 0.3s;
-    transition: all 0.3s;
     box-shadow: 0 0 4px #EEEEEE; }
     #images img:hover {
       box-shadow: 0 0 4px silver; }

@@ -1,47 +1,70 @@
 import json
+import os
 from urllib2 import urlopen
+import urllib2
 from flask import render_template, request, redirect, jsonify
 import flask
 from flask.helpers import url_for
+from werkzeug.utils import secure_filename
 from application import app, helpers
-from application.helpers import get_categories, get_items, urls
+from application.helpers import get_categories, get_items, urls, get_image_path
 from application.models import db, Category
 
 db.init_app(app)
 
+
 @app.route('/categories/update')
 def update():
-    Category.query.delete()
+    if request.is_xhr:
+        Category.query.delete()
 
-    source = request.args.get('source', "theplace")
+        source = request.args.get('source', "theplace")
 
-    for root in urls[source]['paths']:
-        r = urlopen(root)
-        categories = get_categories(r.read().decode("windows-1251"), source)
-        for category in categories:
-            print category
-            db.session.add(Category(name=category['name'], local_url=category['href']))
+        for root in urls[source]['paths']:
+            r = urlopen(root)
+            categories = get_categories(r.read().decode("windows-1251"), source)
+            for category in categories:
+                db.session.add(Category(name=category['name'],
+                                        local_url=category['href'],
+                                        local_id=category['local_id']))
+
+        db.session.commit()
+        return "ok"
+    else:
+        return render_template("theplace/update.html")
 
 
-    db.session.commit()
-    return redirect(url_for('index'))
-
-
-
-@app.route('/items/top')
+@app.route('/items/images')
 def images():
     url = request.args.get('url')
     page = request.args.get('page')
     r = urlopen(url)
     images = get_items(r.read().decode("windows-1251"), "theplace")
+    category = Category.query.filter(Category.local_url == url).first()
     if request.is_xhr:
-        return jsonify(data=images)
+        return jsonify(data=images, name=category.name if category else '')
 
-@app.route('/download')
+
+@app.route('/download', methods=["POST", ])
 def download():
-    url = request.args.get('url')
-    r = urlopen(url)
-    data = r.read()
+    url = request.form.get('url')
+    name = request.form.get('name', '_')
+
+    r = urllib2.Request(url, None,
+                        headers={'User-Agent': 'I just wanna get some of yout picrutes. Thanks for your work',
+                                 'Referer': 'localhost'})
+    r = urlopen(r)
+
+    filename = get_image_path(url, name)
+
+    if not os.path.exists(os.path.dirname(filename)):
+        os.makedirs(os.path.dirname(filename))
+
+    with open(filename, mode='wb') as f:
+        print(filename)
+        f.write(r.read())
+    return ""
+
 
 @app.route('/categories/query')
 def query_categories():

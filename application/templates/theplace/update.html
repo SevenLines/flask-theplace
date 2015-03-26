@@ -1,0 +1,23 @@
+{% extends "index.html" %}
+{% import "macros.html" as macros %}
+
+{% block menu %}
+{#    <div class="navbar-form pull-left">#}
+{#        <select style="min-width: 200px" name="query" id="theplace_search_query" class="form-control">#}
+{#        </select>#}
+{#    </div>#}
+{% endblock %}
+
+{% block body %}
+    <div class="center-block" style="width: 500px;text-align: center">
+
+        <h1>Updating</h1>
+        <i class="fa fa-spinner fa-pulse fa-5x"></i>
+    </div>
+
+    <script>
+        $.get("{{ url_for("update") }}").done(function () {
+            window.location = "{{ url_for("index") }}"
+        })
+    </script>
+{% endblock %}
