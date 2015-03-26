@@ -18,6 +18,7 @@ $pages-bar-width: 50px;
   }
   margin-left: $pages-bar-width + 10px;
   .image {
+
     position: relative;
     display: block;
     float: left;
@@ -30,10 +31,26 @@ $pages-bar-width: 50px;
     .removeme {
       display: none;
     }
+    &:hover {
+      .saveme, .removeme {
+        height: 25%;
+      }
+    }
+
+    .saveme {
+      height: 0;
+      color: #000000;
+    }
+    .removeme {
+      height: 25%;
+    }
+
     .saveme, .removeme {
+      font-size: 1.5em;
+
       .fa-pulse {
-        display: none;
         font-size: 60px;
+        display: none;
         position: absolute;
         top: 50%;
         left: 50%;
@@ -60,6 +77,18 @@ $pages-bar-width: 50px;
     }
 
     &.exists {
+
+      -webkit-transition: all 0.1s;
+      -moz-transition: all 0.1s;
+      -ms-transition: all 0.1s;
+      -o-transition: all 0.1s;
+      transition: all 0.1s;
+
+      box-shadow: 0 0 0 2px yellowgreen;
+      &:hover {
+        box-shadow: 0 0 0 3px yellowgreen;
+        z-index: 10;
+      }
       opacity: 1;
       .saveme {
         display: none;
@@ -74,6 +103,8 @@ $pages-bar-width: 50px;
     }
     &.loading {
       .saveme, .removeme {
+        height: auto;
+        bottom: 0;
         top: 0;
         .fa-save, .fa-remove {
           display: none;

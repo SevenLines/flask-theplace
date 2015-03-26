@@ -24,7 +24,15 @@
     z-index: 0; }
     #images .image .removeme {
       display: none; }
+    #images .image:hover .saveme, #images .image:hover .removeme {
+      height: 25%; }
+    #images .image .saveme {
+      height: 0;
+      color: #000000; }
+    #images .image .removeme {
+      height: 25%; }
     #images .image .saveme, #images .image .removeme {
+      font-size: 1.5em;
       -webkit-transition: all 0.3s;
       -moz-transition: all 0.3s;
       -ms-transition: all 0.3s;
@@ -40,8 +48,8 @@
       bottom: 0;
       text-align: center; }
       #images .image .saveme .fa-pulse, #images .image .removeme .fa-pulse {
-        display: none;
         font-size: 60px;
+        display: none;
         position: absolute;
         top: 50%;
         left: 50%;
@@ -50,7 +58,16 @@
       #images .image .saveme:hover, #images .image .removeme:hover {
         opacity: 0.85; }
     #images .image.exists {
+      -webkit-transition: all 0.1s;
+      -moz-transition: all 0.1s;
+      -ms-transition: all 0.1s;
+      -o-transition: all 0.1s;
+      transition: all 0.1s;
+      box-shadow: 0 0 0 2px yellowgreen;
       opacity: 1; }
+      #images .image.exists:hover {
+        box-shadow: 0 0 0 3px yellowgreen;
+        z-index: 10; }
       #images .image.exists .saveme {
         display: none;
         background-color: yellowgreen;
@@ -60,6 +77,8 @@
         background-color: red;
         color: #ffffff; }
     #images .image.loading .saveme, #images .image.loading .removeme {
+      height: auto;
+      bottom: 0;
       top: 0; }
       #images .image.loading .saveme .fa-save, #images .image.loading .saveme .fa-remove, #images .image.loading .removeme .fa-save, #images .image.loading .removeme .fa-remove {
         display: none; }
