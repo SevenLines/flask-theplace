@@ -1,14 +1,13 @@
-{% extends "index.html" %}
-{% import "macros.html" as macros %}
-
-{% block menu %}
+{%- extends "index.html" %}
+{%- import "macros.html" as macros %}
+{%- block menu %}
     <div class="navbar-form pull-left">
         <select style="min-width: 200px" name="query" id="theplace_search_query" class="form-control">
         </select>
     </div>
-{% endblock %}
+{%- endblock %}
 
-{% block body %}
+{%- block body %}
 
     <div class="row">
         <div class="left-column">
@@ -26,7 +25,6 @@
     </div>
 
     <script>
-
         new PhotosModel({
             urls: {
                 images          : '{{ url_for("images") }}',
@@ -36,4 +34,4 @@
         })
     </script>
 
-{% endblock %}
+{%- endblock %}

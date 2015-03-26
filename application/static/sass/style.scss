@@ -28,6 +28,15 @@ $pages-bar-width: 50px;
     z-index: 0;
     //    padding: 0.5em;
     .saveme {
+      .fa-pulse {
+        display: none;
+        font-size: 60px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -30px;
+        margin-left: -30px;
+      }
       -webkit-transition: all 0.3s;
       -moz-transition: all 0.3s;
       -ms-transition: all 0.3s;
@@ -52,6 +61,17 @@ $pages-bar-width: 50px;
       .saveme {
         background-color: yellowgreen;
         color: #ffffff;
+      }
+    }
+    &.loading {
+      .saveme {
+        top: 0;
+        .fa-save {
+          display: none;
+        }
+        .fa-pulse {
+          display: inline-block;
+        }
       }
     }
   }

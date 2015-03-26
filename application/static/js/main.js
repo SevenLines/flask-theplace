@@ -34,6 +34,7 @@ function PhotosModel(settings) {
 		var template = _.template(['<a class="image <%= exists %>" href="<%= src %>">',
 			'<div class="<%= cls %>">',
 			'<i class="fa fa-save"></i>',
+			'<i class="fa fa-spinner fa-pulse"></i>',
 			'</div>',
 			'<img data-original="<%= thumbnail %>" />',
 			'</a>'].join(''));
@@ -101,11 +102,14 @@ function PhotosModel(settings) {
 					});
 					$aimg.on("click", setImage);
 					$aimg.find(".saveme").click(function (e) {
+						$aimg.addClass("loading");
 						$.post(settings.urls.download, {
 							url : $(e.currentTarget).parent()[0].href,
 							name: self.currentCategoryName
 						}).done(function () {
 							$aimg.addClass("exists");
+						}).always(function () {
+							$aimg.removeClass("loading");
 						});
 						return false;
 					});

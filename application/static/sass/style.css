@@ -37,6 +37,14 @@
       right: 0;
       bottom: 0;
       text-align: center; }
+      #images .image .saveme .fa-pulse {
+        display: none;
+        font-size: 60px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -30px;
+        margin-left: -30px; }
       #images .image .saveme:hover {
         opacity: 0.85; }
     #images .image.exists {
@@ -44,6 +52,12 @@
       #images .image.exists .saveme {
         background-color: yellowgreen;
         color: #ffffff; }
+    #images .image.loading .saveme {
+      top: 0; }
+      #images .image.loading .saveme .fa-save {
+        display: none; }
+      #images .image.loading .saveme .fa-pulse {
+        display: inline-block; }
   #images img {
     height: 150px;
     min-width: 20px;
