@@ -1,7 +1,7 @@
 The Place
 =========
 
-Convenient [http://www.theplace.ru]() scrapper
+Convenient [http://www.theplace.ru](http://www.theplace.ru) scrapper
 
 ## Usage ##
 
