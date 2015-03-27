@@ -17,6 +17,7 @@ app = Flask(__name__)
 app.debug = True
 app.threaded = True
 app.config['SECRET_KEY'] = "!secret"
+app.config['USE_LOCAL'] = config.get('USE_LOCAL', True)
 
 if 'SAVE_PATH' in config:
     save_path = config['SAVE_PATH']

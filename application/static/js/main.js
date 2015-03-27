@@ -5,6 +5,9 @@
 function PhotosModel(settings) {
 	var self = this;
 	self.currentCategoryName = '';
+	self.is_local = false;
+	self.downloadClick = false;
+
 
 	(function () {
 		var lastPosX = -1;
@@ -31,7 +34,8 @@ function PhotosModel(settings) {
 		var lastPage = currentPage;
 		var pages = [];
 
-		var template = _.template(['<a class="image <%= exists %>" href="<%= src %>">',
+		var template = _.template([
+			'<a class="image <%= exists %>" href="<%= src %>" <%= download %>>',
 			'<div class="saveme">',
 			'<i class="fa fa-save"></i>',
 			'<i class="fa fa-spinner fa-pulse"></i>',
@@ -44,19 +48,24 @@ function PhotosModel(settings) {
 			'</a>'].join(''));
 
 		function setImage(event) {
-			var image = document.getElementById("image-preview");
-			image.src = "";
-			$(image).parent().addClass("loading");
-			setTimeout(function () {
-				image.src = event.currentTarget.href;
-				$(image).one("load", function () {
-					$(image).parent().removeClass("loading");
-				}).each(function () {
-					if (this.complete) $(this).load();
-				});
-			}, 300);
+			console.log("cool");
+			if (self.downloadClick) {
+				self.downloadClick = false;
+			} else {
+				var image = document.getElementById("image-preview");
+				image.src = "";
+				$(image).parent().addClass("loading");
+				setTimeout(function () {
+					image.src = event.currentTarget.href;
+					$(image).one("load", function () {
+						$(image).parent().removeClass("loading");
+					}).each(function () {
+						if (this.complete) $(this).load();
+					});
+				}, 300);
 
-			return false;
+				return false;
+			}
 		}
 
 		function fetchInit(url) {
@@ -85,19 +94,21 @@ function PhotosModel(settings) {
 			$.get(settings.urls.images, {
 				url: url
 			}).done(function (response) {
-				var first = false;
+				self.is_local = response.is_local;
+
 				if (pages.length == 0) {
 					pages = response.data.pages;
-					$("html, body").animate({scrollTop: 0}, "slow");
 				}
 				var $images = $('<div class="section"></div>');
+
 				$("#images").append($images);
 				response.data.images.forEach(function (item) {
 					var $aimg = $(template({
 						src      : item.src,
 						thumbnail: item.thumbnail,
 						cls      : "saveme",
-						exists   : item.exists ? 'exists' : ''
+						exists   : item.exists ? 'exists' : '',
+						download : self.is_local ? '' : 'download'
 					}));
 					var $img = $aimg.find("img");
 					$img.show().lazyload({
@@ -106,28 +117,41 @@ function PhotosModel(settings) {
 					});
 					$aimg.on("click", setImage);
 					$aimg.find(".saveme").click(function (e) {
-						$aimg.addClass("loading");
-						$.post(settings.urls.download, {
-							url : $(e.currentTarget).parent()[0].href,
-							name: self.currentCategoryName
-						}).done(function () {
-							$aimg.addClass("exists");
-						}).always(function () {
-							$aimg.removeClass("loading");
-						});
+						if (self.is_local) {
+							$aimg.addClass("loading");
+							$.post(settings.urls.download, {
+								url : $(e.currentTarget).parent()[0].href,
+								name: self.currentCategoryName
+							}).done(function () {
+								$aimg.addClass("exists");
+							}).always(function () {
+								$aimg.removeClass("loading");
+							});
+						} else {
+							var link = document.createElement('a');
+							link.href = $(e.currentTarget).parent()[0].href;
+							//link.download = "cool";
+							document.body.appendChild(link);
+							link.click();
+							//document.body.removeChild(link);
+							//self.downloadClick = true;
+							//$aimg.click();
+						}
 						return false;
 					});
 
 					$aimg.find(".removeme").click(function (e) {
-						$aimg.addClass("loading");
-						$.post(settings.urls.remove, {
-							url : $(e.currentTarget).parent()[0].href,
-							name: self.currentCategoryName
-						}).done(function () {
-							$aimg.removeClass("exists");
-						}).always(function () {
-							$aimg.removeClass("loading");
-						});
+						if (self.is_local) {
+							$aimg.addClass("loading");
+							$.post(settings.urls.remove, {
+								url : $(e.currentTarget).parent()[0].href,
+								name: self.currentCategoryName
+							}).done(function () {
+								$aimg.removeClass("exists");
+							}).always(function () {
+								$aimg.removeClass("loading");
+							});
+						}
 						return false;
 					});
 
