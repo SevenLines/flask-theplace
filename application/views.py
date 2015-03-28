@@ -4,6 +4,7 @@ import urllib2
 from flask import render_template, request, redirect, jsonify, url_for
 import flask
 from flask.ext.migrate import upgrade
+from sqlalchemy import or_
 from application.app_settings import app
 from application.helpers import get_albums, get_images, get_image_path, is_local, sources
 from application.models import db, Category
@@ -19,8 +20,10 @@ def update():
             for source_name in sources:
                 for category in get_albums(source_name):
                     db.session.add(Category(name=category['name'],
+                                            source_name=source_name,
                                             local_url=category['href'],
                                             local_id=category['local_id']))
+                    print "%s : %s" % (source_name, category['name'])
                 db.session.commit()
             return "ok"
         else:
@@ -33,9 +36,19 @@ def update():
 def images():
     url = request.args.get('url')
     id_ = request.args.get('id')
-    category = Category.query.filter(Category.local_id == id_).first()
+
+    source_name = ""
+    for sn in sources:
+        if url.startswith(sources[sn].root):
+            source_name = sn
+            break
+
+    if not source_name:
+        flask.abort(404)
+
+    category = Category.query.filter(or_(Category.local_id == id_, Category.local_url == url)).first()
     name = category.name if category else ''
-    _images = get_images("theplace", url, name)
+    _images = get_images(source_name, url, name)
     if request.is_xhr:
         return jsonify(data=_images, name=name, is_local=is_local())
 

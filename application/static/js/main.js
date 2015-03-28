@@ -5,6 +5,7 @@
 function PhotosModel(settings) {
 	var self = this;
 	self.currentCategoryName = '';
+	self.currentSourceName = '';
 	self.is_local = false;
 	self.downloadClick = false;
 	self.currentAlbumId = -1;
@@ -85,8 +86,9 @@ function PhotosModel(settings) {
 				return;
 			$("#load-progress").show();
 			$.get(settings.urls.images, {
-				id: self.currentAlbumId,
-				url: url
+				id         : self.currentAlbumId,
+				source_name: self.currentSourceName,
+				url        : url
 			}).done(function (response) {
 				self.is_local = response.is_local;
 				var page = currentPage + 1;
@@ -193,6 +195,7 @@ function PhotosModel(settings) {
 				processResults: function (data, page) {
 					return {
 						results: data.items.map(function (item) {
+							self.currentSourceName = item.source_name;
 							return {
 								'id'  : item.local_url,
 								'text': item.name

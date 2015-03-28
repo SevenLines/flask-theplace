@@ -5,7 +5,7 @@ class Source(object):
     name = ""
     root = ""
     photos = ""
-    decode = ""
+    decode = "utf8"
 
     album_item_xpath = ""
     image_item_xpath = ""
