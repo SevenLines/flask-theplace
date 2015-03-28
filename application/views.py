@@ -4,7 +4,7 @@ import urllib2
 from flask import render_template, request, redirect, jsonify, url_for
 import flask
 from flask.ext.migrate import upgrade
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 from application.app_settings import app
 from application.helpers import get_albums, get_images, get_image_path, is_local, sources
 from application.models import db, Category
@@ -46,7 +46,11 @@ def images():
     if not source_name:
         flask.abort(404)
 
-    category = Category.query.filter(or_(Category.local_id == id_, Category.local_url == url)).first()
+    category = Category.query.filter(
+        and_(Category.source_name == source_name,
+             or_(Category.local_id == id_, Category.local_url == url)
+             )
+    ).first()
     name = category.name if category else ''
     _images = get_images(source_name, url, name)
     if request.is_xhr:
