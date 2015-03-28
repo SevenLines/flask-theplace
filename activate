@@ -1,1 +1,1 @@
-. ~/_WEB/_ENV/theplace/bin/activate
+. env/bin/activate

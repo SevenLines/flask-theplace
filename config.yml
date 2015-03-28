@@ -1,4 +1,5 @@
 SAVE_PATH:
   win:  'd:\_IMAGES\_PPL\'
   unix: '/mnt/homeworld/_IMAGES/_PPL'
-USE_LOCAL: false
+USE_LOCAL: true
+DEBUG: true

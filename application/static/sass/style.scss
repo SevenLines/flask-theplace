@@ -9,16 +9,39 @@ $pages-bar-width: 50px;
   box-shadow: 4px 0 8px #eee;
 }
 
-#images {
-  .section {
-    overflow: hidden;
-    border-bottom: 2px groove #eee;
-    padding-bottom: 0.5em;
+.template {
+  display: none;
+}
+
+.section {
+  hr {
+    margin: 0 -0.5em;
     margin-bottom: 0.5em;
   }
-  margin-left: $pages-bar-width + 10px;
-  .image {
+  .page {
+    h2 {
+      font-weight: bold;
+      text-shadow: 0 0 1px white;
+      margin: 0
+    }
+    padding: 0.25em;
+    text-align: center;
+  }
+  padding: 0.5em;
+  margin: 1em 0.5em;
+  background-color: white;
+  border-radius: 16px;
 
+  border: 1px solid #c0c0c0;
+  box-shadow: 0 0 8px silver;
+
+  overflow: hidden;
+}
+
+#images {
+
+  margin-left: $pages-bar-width;
+  .image {
     position: relative;
     display: block;
     float: left;
@@ -147,7 +170,7 @@ $pages-bar-width: 50px;
   position: fixed;
   right: 0;
   padding: 0.5em;
-  width: 35%;
+  width: 34%;
   text-align: center;
   box-shadow: -4px 0 8px #eee;
   background-color: #FFF;

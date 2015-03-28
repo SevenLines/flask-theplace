@@ -23,6 +23,7 @@
     "jquery.cookie": "~1.4.1",
     "fullpage.js": "~2.6.2",
     "scrollNav": "~2.6.0",
-    "color-thief": "*"
+    "color-thief": "*",
+    "mustache.js": "~2.0.0"
   }
 }

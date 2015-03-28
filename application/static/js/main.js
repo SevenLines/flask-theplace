@@ -34,18 +34,10 @@ function PhotosModel(settings) {
 		var lastPage = currentPage;
 		var pages = [];
 
-		var template = _.template([
-			'<a class="image <%= exists %>" href="<%= src %>" <%= download %>>',
-			'<div class="saveme">',
-			'<i class="fa fa-save"></i>',
-			'<i class="fa fa-spinner fa-pulse"></i>',
-			'</div>',
-			'<div class="removeme">',
-			'<i class="fa fa-remove"></i>',
-			'<i class="fa fa-spinner fa-pulse"></i>',
-			'</div>',
-			'<img data-original="<%= thumbnail %>" />',
-			'</a>'].join(''));
+		var templateImageItem = $("#template-image-item").html();
+		var templateSectionItem = $("#template-section-item").html();
+		Mustache.parse(templateImageItem);
+		Mustache.parse(templateSectionItem);
 
 		function setImage(event) {
 			console.log("cool");
@@ -95,21 +87,26 @@ function PhotosModel(settings) {
 				url: url
 			}).done(function (response) {
 				self.is_local = response.is_local;
+				var page = currentPage + 1;
 
 				if (pages.length == 0) {
 					pages = response.data.pages;
+					page -= 1;
 				}
-				var $images = $('<div class="section"></div>');
+				var $images = $(Mustache.render(templateSectionItem, {
+					page: page
+				}));
 
 				$("#images").append($images);
 				response.data.images.forEach(function (item) {
-					var $aimg = $(template({
+					var rendered = Mustache.render(templateImageItem, {
 						src      : item.src,
 						thumbnail: item.thumbnail,
 						cls      : "saveme",
 						exists   : item.exists ? 'exists' : '',
 						download : self.is_local ? '' : 'download'
-					}));
+					});
+					var $aimg = $(rendered);
 					var $img = $aimg.find("img");
 					$img.show().lazyload({
 						threshold: 600,

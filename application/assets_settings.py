@@ -5,11 +5,12 @@ assets = Environment(app)
 
 js = Bundle('vendor/jquery/dist/jquery.min.js',
             'vendor/jquery.lazyload/jquery.lazyload.js',
-            'vendor/bootstrap/dist/js/bootstrap.js',
+            # 'vendor/bootstrap/dist/js/bootstrap.js',
             'vendor/select2/dist/js/select2.js',
             'vendor/lodash/lodash.min.js',
             'vendor/jquery.cookie/jquery.cookie.js',
-            'vendor/color-thief/dist/color-thief.min.js',
+            'vendor/mustache.js/mustache.js',
+            # 'vendor/color-thief/dist/color-thief.min.js',
 
             'js/main.js',
             # 'vendor/fullpage.js/jquery.fullPage.min.js',
