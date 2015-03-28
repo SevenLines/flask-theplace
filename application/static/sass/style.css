@@ -109,6 +109,7 @@
       box-shadow: 0 0 4px silver; }
 
 #load-progress {
+  padding-top: 20px;
   width: 100%;
   text-align: center;
   padding-bottom: 20px; }
@@ -117,6 +118,7 @@
   position: fixed; }
 
 .left-column {
+  padding-top: 52px;
   float: left;
   width: 65%; }
 

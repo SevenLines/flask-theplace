@@ -5,7 +5,7 @@ from flask import render_template, request, redirect, jsonify, url_for
 import flask
 from flask.ext.migrate import upgrade
 from application.app_settings import app
-from application.helpers import get_categories, get_items, urls, get_image_path, is_local
+from application.helpers import get_albums, get_images, get_image_path, is_local, sources
 from application.models import db, Category
 
 db.init_app(app)
@@ -16,18 +16,12 @@ def update():
     if is_local():
         if request.is_xhr:
             Category.query.delete()
-
-            source = request.args.get('source', "theplace")
-
-            for root in urls[source]['paths']:
-                r = urlopen(root)
-                categories = get_categories(r.read().decode("windows-1251"), source)
-                for category in categories:
+            for source_name in sources:
+                for category in get_albums(source_name):
                     db.session.add(Category(name=category['name'],
                                             local_url=category['href'],
                                             local_id=category['local_id']))
-
-            db.session.commit()
+                db.session.commit()
             return "ok"
         else:
             return render_template("theplace/update.html")
@@ -38,11 +32,12 @@ def update():
 @app.route('/items/images')
 def images():
     url = request.args.get('url')
-    r = urlopen(url)
-    _images = get_items(r.read(), "theplace")
-    category = Category.query.filter(Category.local_url == url).first()
+    id_ = request.args.get('id')
+    category = Category.query.filter(Category.local_id == id_).first()
+    name = category.name if category else ''
+    _images = get_images("theplace", url, name)
     if request.is_xhr:
-        return jsonify(data=_images, name=category.name if category else '', is_local=is_local())
+        return jsonify(data=_images, name=name, is_local=is_local())
 
 
 @app.route('/download', methods=["POST", ])

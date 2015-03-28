@@ -7,6 +7,7 @@ function PhotosModel(settings) {
 	self.currentCategoryName = '';
 	self.is_local = false;
 	self.downloadClick = false;
+	self.currentAlbumId = -1;
 
 
 	(function () {
@@ -65,11 +66,11 @@ function PhotosModel(settings) {
 			lastPage = currentPage - 1;
 			pages.length = 0;
 			if ($('#theplace_search_query').select2('val')) {
-				console.log($('#theplace_search_query').select2('val'));
 				$.cookie("lastCategory", $('#theplace_search_query').select2('val'), {expires: 7, path: '/'});
 			}
 			$("#images").empty();
 			fetchMore(url, function (response) {
+				self.currentAlbumId = response.data.id;
 				self.currentCategoryName = response.name;
 				fetchMore(pages[currentPage + 1], function (response) {
 					currentPage++;
@@ -84,6 +85,7 @@ function PhotosModel(settings) {
 				return;
 			$("#load-progress").show();
 			$.get(settings.urls.images, {
+				id: self.currentAlbumId,
 				url: url
 			}).done(function (response) {
 				self.is_local = response.is_local;
