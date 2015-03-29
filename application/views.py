@@ -1,36 +1,50 @@
 import os
 from urllib2 import urlopen
 import urllib2
-from flask import render_template, request, redirect, jsonify, url_for
+from flask import stream_with_context, render_template, request, redirect, jsonify, url_for
 import flask
 from flask.ext.migrate import upgrade
+from flask.ext.socketio import emit, send
 from sqlalchemy import or_, and_
+import time
+from werkzeug.wrappers import Response
 from application.app_settings import app
 from application.helpers import get_albums, get_images, get_image_path, is_local, sources
 from application.models import db, Category
-
-db.init_app(app)
+from socket_settings import socketio
 
 
 @app.route('/categories/update')
 def update():
     if is_local():
-        if request.is_xhr:
-            Category.query.delete()
-            for source_name in sources:
-                for category in get_albums(source_name):
-                    db.session.add(Category(name=category['name'],
-                                            source_name=source_name,
-                                            local_url=category['href'],
-                                            local_id=category['local_id']))
-                    print "%s : %s" % (source_name, category['name'])
-                db.session.commit()
-            return "ok"
+        if request.headers.get('accept') == 'text/event-stream':
+            def get():
+                Category.query.delete()
+                for source_name in sources:
+                    for category in get_albums(source_name):
+                        db.session.add(Category(name=category['name'],
+                                                source_name=source_name,
+                                                local_url=category['href'],
+                                                local_id=category['local_id']))
+                        status = "%s (%s)" % (category['name'], source_name)
+                        # print status
+                        yield "data: %s\n\n" % status
+                    db.session.commit()
+                yield "data: $done\n\n"
+            return Response(get(), mimetype="text/event-stream")
         else:
             return render_template("theplace/update.html")
     else:
         return redirect(url_for("index"))
 
+
+@app.route('/update_progress')
+def update_progress():
+    def inner():
+        yield "cool"
+        time.sleep(2)
+        yield "cool2"
+    return Response(inner(), mimetype="text")
 
 @app.route('/items/images')
 def images():

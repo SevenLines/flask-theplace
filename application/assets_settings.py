@@ -15,7 +15,7 @@ js = Bundle('vendor/jquery/dist/jquery.min.js',
             'js/main.js',
             # 'vendor/fullpage.js/jquery.fullPage.min.js',
             # 'vendor/scrollNav/dist/jquery.scrollNav.min.js',
-            # 'js/socket.io.js',
+            'js/socket.io.js',
             # 'js/jquery.form.min.js',
             filters='yui_js', output='dist/script.js')
 

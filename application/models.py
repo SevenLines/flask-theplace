@@ -5,7 +5,6 @@ from application.app_settings import app, ROOT_DIR
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///%s' % os.path.join(ROOT_DIR, 'db/database.db')
 db = SQLAlchemy(app)
 
-
 class Source(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))

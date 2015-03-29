@@ -9,15 +9,21 @@
 {% endblock %}
 
 {% block body %}
-    <div class="center-block" style="width: 500px;text-align: center">
-
-        <h1>Updating</h1>
+    <div class="center-block" style="margin-top:80px;width: 100%;text-align: center">
         <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        <h3><small>Loading:</small> <span id="status"></span></h3>
     </div>
 
     <script>
-        $.get("{{ url_for("update") }}").done(function () {
+        var eventSource = new EventSource("{{ url_for("update") }}");
+
+        eventSource.onmessage = function(e) {
+          if (e.data == "$done") {
+            eventSource.close();
             window.location = "{{ url_for("index") }}"
-        })
+          } else {
+                $("#status").html(e.data);
+          }
+        };
     </script>
 {% endblock %}

@@ -41,18 +41,22 @@ class ThePlaceSource(Source):
         }
 
     def pages(self, node):
-        node = node[-1]
-        href = node.get('href')
-        regexp = re.compile(r"/photos/gallery\.php\?id=(\d+)&page=(\d+)")
-        m = regexp.search(href)
-        if m:
-            id = int(m.group(1))
-            pages = int(m.group(2))
+        if len(node) > 0:
+            node = node[-1]
+            href = node.get('href')
+            regexp = re.compile(r"/photos/gallery\.php\?id=(\d+)&page=(\d+)")
+            m = regexp.search(href)
+            if m:
+                id = int(m.group(1))
+                pages = int(m.group(2))
+            else:
+                return [], -1
+
+            return list([urljoin(self.root, "/photos/gallery.php?id=%d&page=%d" % (id, i))
+                         for i in xrange(1, pages + 1)]), id
+
         else:
             return [], -1
-
-        return list([urljoin(self.root, "/photos/gallery.php?id=%d&page=%d" % (id, i))
-                     for i in xrange(1, pages + 1)]), id
 
 
 
