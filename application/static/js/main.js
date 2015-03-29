@@ -73,7 +73,7 @@ function PhotosModel(settings) {
 			fetchMore(url, function (response) {
 				self.currentAlbumId = response.data.id;
 				self.currentCategoryName = response.name;
-				fetchMore(pages[currentPage+1], function (response) {
+				fetchMore(pages[currentPage + 1], function (response) {
 					currentPage++;
 				});
 				lastPage = currentPage;
@@ -98,7 +98,7 @@ function PhotosModel(settings) {
 					page -= 1;
 				}
 				var $images = $(Mustache.render(templateSectionItem, {
-					page: page + 1,
+					page       : page + 1,
 					pages_count: pages.length
 				}));
 
@@ -194,15 +194,40 @@ function PhotosModel(settings) {
 					};
 				},
 				processResults: function (data, page) {
-					return {
-						results: data.items.map(function (item) {
-							self.currentSourceName = item.source_name;
-							return {
-								'id'  : item.local_url,
-								'text': item.name
+					var sources = [];
+					var out = [];
+					data.items.forEach(function (item) {
+						if (sources.indexOf(item.source_name) == -1) {
+							sources.push(item.source_name);
+						}
+					});
+
+					for (var i = 0; i < sources.length; ++i) {
+						var item = {};
+						item.text = sources[i];
+						item.children = data.items.map(function (el) {
+							if (el.source_name == item.text) {
+								return {
+									'id'  : el.local_url,
+									'text': el.name
+								}
 							}
-						})
+							return "";
+						});
+						out.push(item)
+					}
+					return {
+						results: out
 					};
+					//return {
+					//	results: data.items.map(function (item) {
+					//		self.currentSourceName = item.source_name;
+					//		return {
+					//			'id'  : item.local_url,
+					//			'text': item.name
+					//		}
+					//	})
+					//};
 				},
 				cache         : true
 			}

@@ -22,7 +22,7 @@ class Category(db.Model):
     def serialize(self):
         return {
             'id': self.id,
-            'name': "%s (%s)" % (self.name, self.source_name),
+            'name': self.name,
             'source_name': self.source_name,
             'local_url': self.local_url,
             'local_id': self.local_id
