@@ -1,17 +1,17 @@
 import os
 from urllib2 import urlopen
 import urllib2
-from flask import stream_with_context, render_template, request, redirect, jsonify, url_for
+import time
+
+from flask import render_template, request, redirect, jsonify, url_for
 import flask
 from flask.ext.migrate import upgrade
-from flask.ext.socketio import emit, send
 from sqlalchemy import or_, and_
-import time
 from werkzeug.wrappers import Response
+
 from application.app_settings import app
 from application.helpers import get_albums, get_images, get_image_path, is_local, sources
 from application.models import db, Category
-from socket_settings import socketio
 
 
 @app.route('/categories/update')
@@ -31,20 +31,12 @@ def update():
                         yield "data: %s\n\n" % status
                     db.session.commit()
                 yield "data: $done\n\n"
-            return Response(get(), mimetype="text/event-stream")
+            out = get()
+            return Response(out, mimetype="text/event-stream")
         else:
             return render_template("theplace/update.html")
     else:
         return redirect(url_for("index"))
-
-
-@app.route('/update_progress')
-def update_progress():
-    def inner():
-        yield "cool"
-        time.sleep(2)
-        yield "cool2"
-    return Response(inner(), mimetype="text")
 
 @app.route('/items/images')
 def images():
