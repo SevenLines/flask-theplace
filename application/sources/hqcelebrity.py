@@ -58,7 +58,6 @@ class HqCelebritySource(Source):
 
     def pages(self, nodes):
         max_num = 1
-        page_num = 1
         id = -1
         for node in nodes:
             href = node.get("href")
@@ -70,7 +69,7 @@ class HqCelebritySource(Source):
                     max_num = page_num
 
         return list([urljoin(self.root, "thumbnails.php?album=%d&page=%d" % (id, i))
-                     for i in xrange(1, max_num)]), id
+                     for i in xrange(1, max_num+1)]), id
 
 
 

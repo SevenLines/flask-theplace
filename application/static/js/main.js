@@ -63,7 +63,7 @@ function PhotosModel(settings) {
 		}
 
 		function fetchInit(url) {
-			currentPage = 1;
+			currentPage = 0;
 			lastPage = currentPage - 1;
 			pages.length = 0;
 			if ($('#theplace_search_query').select2('val')) {
@@ -73,7 +73,7 @@ function PhotosModel(settings) {
 			fetchMore(url, function (response) {
 				self.currentAlbumId = response.data.id;
 				self.currentCategoryName = response.name;
-				fetchMore(pages[currentPage + 1], function (response) {
+				fetchMore(pages[currentPage+1], function (response) {
 					currentPage++;
 				});
 				lastPage = currentPage;
@@ -98,7 +98,8 @@ function PhotosModel(settings) {
 					page -= 1;
 				}
 				var $images = $(Mustache.render(templateSectionItem, {
-					page: page
+					page: page + 1,
+					pages_count: pages.length
 				}));
 
 				$("#images").append($images);
