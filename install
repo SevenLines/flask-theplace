@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 rm -rf env
 virtualenv env
-source env/bin/acitvate
+source env/bin/activate
+pip install pip --upgrade
 pip install -r requirements.txt

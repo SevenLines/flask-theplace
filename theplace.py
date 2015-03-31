@@ -7,7 +7,7 @@ from flask.ext.script import Manager
 
 from application.app_settings import app, ROOT_DIR
 from application.models import db
-from application.socket_settings import socketio
+# from application.socket_settings import socketio
 
 migrate = Migrate(app, db, directory=os.path.join(ROOT_DIR, "db/migrations"))
 manager = Manager(app)
