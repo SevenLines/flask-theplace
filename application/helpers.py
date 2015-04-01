@@ -1,5 +1,7 @@
 import glob
 import os
+import re
+from urlparse import urljoin
 import requests
 
 from lxml import html
@@ -102,7 +104,7 @@ class SourceExtractor(object):
     @classmethod
     def get_type(cls, url):
         for type, info in cls.TYPES.items():
-            if url.startswith(info['prefix']):
+            if re.search(info['pattern'], url):
                 return info
         return None
 
@@ -144,10 +146,40 @@ class SourceExtractor(object):
 
     # endregion
 
+    @staticmethod
+    def __get_imagevenue_path(url, category_name):
+        m = re.search(SourceExtractor.TYPES['imagevenue']['pattern'], url)
+        if m:
+            return get_image_path(m.group(2), category_name)
+        else:
+            return None
+
+    @staticmethod
+    def __get_imagevenue(url, category_name):
+        r = requests.get(url)
+        root = html.fromstring(r.text)
+
+        m = re.search(SourceExtractor.TYPES['imagevenue']['pattern'], url)
+
+
+        img = root.cssselect("#thepic")
+        if len(img):
+            img = img[-1]
+        else:
+            return ""
+
+        return urljoin(url, img.get("src"))
+
+
     TYPES = {
         'imagebam': {
-            'prefix': 'http://www.imagebam.com/',
+            'pattern': r'^http://www.imagebam.com/',
             'src': lambda url, category_name: SourceExtractor.__get_imagebam(url, category_name),
             'path': lambda url, category_name: SourceExtractor.__get_imagebam_path(url, category_name)
+        },
+        'imagevenue': {
+            'pattern': r'http://img(\d+)\.imagevenue.com/img.php\?image=((\w+)\.(\w+))',
+            'src': lambda url, category_name: SourceExtractor.__get_imagevenue(url, category_name),
+            'path': lambda url, category_name: SourceExtractor.__get_imagevenue_path(url, category_name)
         }
     }

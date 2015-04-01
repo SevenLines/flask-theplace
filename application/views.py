@@ -1,3 +1,4 @@
+import glob
 import os
 from urllib2 import urlopen
 import urllib2
@@ -102,9 +103,10 @@ def remove():
     if is_local():
         url = request.form.get('url')
         name = request.form.get('name', '_')
-        filename = get_image_path(url, name)
-        if os.path.exists(filename):
-            os.remove(filename)
+        filename = SourceExtractor.get_path(url, name)
+        files = glob.glob("%s*" % filename)
+        if len(files) == 1:
+            os.remove(files[0])
             return ""
         else:
             flask.abort(404)

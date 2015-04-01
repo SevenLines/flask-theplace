@@ -19,3 +19,5 @@ class FlaskTestCase(unittest.TestCase):
     def test_index_should_response(self):
         rv = self.app.get('/')
         self.assertEqual(rv.status_code, 200)
+
+
