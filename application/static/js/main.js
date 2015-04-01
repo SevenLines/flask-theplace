@@ -6,6 +6,7 @@ function PhotosModel(settings) {
 	var self = this;
 	self.currentCategoryName = '';
 	self.currentSourceName = '';
+	self.currentNextPage = '';
 	self.is_local = false;
 	self.downloadClick = false;
 	self.currentAlbumId = -1;
@@ -73,7 +74,16 @@ function PhotosModel(settings) {
 			fetchMore(url, function (response) {
 				self.currentAlbumId = response.data.id;
 				self.currentCategoryName = response.name;
-				fetchMore(pages[currentPage + 1], function (response) {
+
+
+				var next_page = "";
+				if (pages.length > 1) {
+					next_page = pages[currentPage+1]
+				} else {
+					next_page = self.currentNextPage;
+				}
+
+				fetchMore(next_page, function (response) {
 					currentPage++;
 				});
 				lastPage = currentPage;
@@ -91,6 +101,7 @@ function PhotosModel(settings) {
 				url        : url
 			}).done(function (response) {
 				self.is_local = response.is_local;
+				self.currentNextPage = response.data.next_page;
 				var page = currentPage + 1;
 
 				if (pages.length == 0) {
@@ -171,7 +182,15 @@ function PhotosModel(settings) {
 		function onScroll() {
 			if ($(window).scrollTop() >= $(document).height() - $(window).height() - 600) {
 				if (lastPage != currentPage) {
-					fetchMore(pages[currentPage + 1], function (response) {
+
+					var next_page = "";
+					if (pages.length > 1) {
+						next_page = pages[currentPage+1]
+					} else {
+						next_page = self.currentNextPage;
+					}
+
+					fetchMore(next_page, function (response) {
 						currentPage++;
 					});
 					lastPage = currentPage;

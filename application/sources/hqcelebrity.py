@@ -69,7 +69,7 @@ class HqCelebritySource(Source):
                     max_num = page_num
 
         return list([urljoin(self.root, "thumbnails.php?album=%d&page=%d" % (id, i))
-                     for i in xrange(1, max_num+1)]), id
+                     for i in xrange(1, max_num+1)]), id, ""
 
 
 

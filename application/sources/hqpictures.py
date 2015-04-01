@@ -52,7 +52,7 @@ class HqPicturesSource(Source):
             return []
 
         return list([urljoin(self.root, "/photos/gallery.php?id=%d&page=%d" % (id, i))
-                     for i in xrange(1, pages + 1)]), id
+                     for i in xrange(1, pages + 1)]), id, ""
 
 
 

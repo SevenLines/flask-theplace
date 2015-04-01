@@ -50,13 +50,13 @@ class ThePlaceSource(Source):
                 id = int(m.group(1))
                 pages = int(m.group(2))
             else:
-                return [], -1
+                return [], -1, ""
 
             return list([urljoin(self.root, "/photos/gallery.php?id=%d&page=%d" % (id, i))
-                         for i in xrange(1, pages + 1)]), id
+                         for i in xrange(1, pages + 1)]), id, ""
 
         else:
-            return [], -1
+            return [], -1, ""
 
 
 

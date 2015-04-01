@@ -18,9 +18,17 @@ from application.models import db, Category
 def update():
     if is_local():
         if request.headers.get('accept') == 'text/event-stream':
+
+            # select source
+            source = request.args.get("source")
+            if source is None:
+                _sources = sources
+            else:
+                _sources = [source, ]
+
             def get():
-                Category.query.delete()
-                for source_name in sources:
+                for source_name in _sources:
+                    Category.query.filter(Category.source_name==source_name).delete()
                     for category in get_albums(source_name):
                         db.session.add(Category(name=category['name'],
                                                 source_name=source_name,
@@ -34,7 +42,7 @@ def update():
             out = get()
             return Response(out, mimetype="text/event-stream")
         else:
-            return render_template("theplace/update.html")
+            return render_template("theplace/update.html", sources=sources)
     else:
         return redirect(url_for("index"))
 

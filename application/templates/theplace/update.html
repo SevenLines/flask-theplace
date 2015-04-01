@@ -9,21 +9,42 @@
 {% endblock %}
 
 {% block body %}
-    <div class="center-block" style="margin-top:80px;width: 100%;text-align: center">
-        <i class="fa fa-spinner fa-pulse fa-5x"></i>
-        <h3><small>Loading:</small> <span id="status"></span></h3>
+    <div class="" style="margin-top:80px;">
+        <div class="col-md-3">
+            <div id="update_sources" class="list-group">
+                <a href="" class="list-group-item">
+                    update all
+                </a>
+                {% for source in sources %}
+                    <a href="?source={{source}}" class="list-group-item">
+                        update: {{source}}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div id="info" class="center-block" style="display:none;width: 100%;text-align: center">
+                <i class="fa fa-spinner fa-pulse fa-5x"></i>
+                <h3><small>Loading:</small> <span id="status"></span></h3>
+            </div>
+        </div>
     </div>
-
     <script>
-        var eventSource = new EventSource("{{ url_for("update") }}");
+        $("#update_sources").find("a").click(function() {
+            var eventSource = new EventSource(this.href);
 
-        eventSource.onmessage = function(e) {
-          if (e.data == "$done") {
-            eventSource.close();
-            window.location = "{{ url_for("index") }}"
-          } else {
+            eventSource.onmessage = function(e) {
+              if (e.data == "$done") {
+                $("#info").hide();
+                eventSource.close();
+{#                window.location = "{{ url_for("index") }}"#}
+              } else {
+                $("#info").show();
                 $("#status").html(e.data);
-          }
-        };
+              }
+            };
+
+          return false;
+        });
     </script>
 {% endblock %}

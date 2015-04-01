@@ -26,4 +26,8 @@ class Source(object):
         pass
 
     def pages(self, node):
+        """
+        :param node:
+        :return: tripple (pages_urls, album_id, next_page)
+        """
         pass
