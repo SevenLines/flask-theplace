@@ -15,21 +15,24 @@ function PhotosModel(settings) {
 	(function () {
 		var lastPosX = -1;
 		var entered = false;
-		$(".hover-area").hover(function (e) {
-			lastPosX = e.clientX;
-		}, function (e) {
-			$(".right-column").toggleClass("hovered", false);
-			entered = false;
-		}).on("mousemove", function (e) {
-			if (lastPosX - e.clientX > 50) {
-				$(".right-column").toggleClass("hovered", false);
-				entered = false;
-			} else if (!entered && e.clientX - lastPosX > 5) {
-				entered = true;
-				$(".right-column").toggleClass("hovered", true);
-				var image = $("#image-preview")[0];
-			}
+		$(".right-column").click(function() {
+			$(".right-column").toggleClass("hovered");
 		});
+		//$(".hover-area").hover(function (e) {
+		//	lastPosX = e.clientX;
+		//}, function (e) {
+		//	$(".right-column").toggleClass("hovered", false);
+		//	entered = false;
+		//}).on("mousemove", function (e) {
+		//	if (lastPosX - e.clientX > 50) {
+		//		$(".right-column").toggleClass("hovered", false);
+		//		entered = false;
+		//	} else if (!entered && e.clientX - lastPosX > 5) {
+		//		entered = true;
+		//		$(".right-column").toggleClass("hovered", true);
+		//		var image = $("#image-preview")[0];
+		//	}
+		//});
 	})();
 
 	$(document).ready(function () {

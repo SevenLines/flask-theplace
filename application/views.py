@@ -12,6 +12,7 @@ from werkzeug.wrappers import Response
 from application.app_settings import app
 from application.helpers import get_albums, get_images, get_image_path, is_local, sources
 from application.models import db, Category
+from helpers import open_url_ex
 
 
 @app.route('/categories/update')
@@ -77,10 +78,11 @@ def download():
         url = request.form.get('url')
         name = request.form.get('name', '_')
 
-        r = urllib2.Request(url, None,
-                            headers={'User-Agent': 'I just wanna get some of your pictures. Thanks for your work',
-                                     'Referer': 'localhost'})
-        r = urlopen(r)
+        r = open_url_ex(url)
+        # r = urllib2.Request(url, None,
+        #                     headers={'User-Agent': 'I just wanna get some of your pictures. Thanks for your work',
+        #                              'Referer': 'localhost'})
+        # r = urlopen(r)
 
         filename = get_image_path(url, name)
 
@@ -88,7 +90,7 @@ def download():
             os.makedirs(os.path.dirname(filename))
 
         with open(filename, mode='wb') as f:
-            f.write(r.read())
+            f.write(r.content)
         return ""
     else:
         return flask.abort(405)

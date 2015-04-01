@@ -7,3 +7,4 @@ yuicompressor
 pyyaml
 lxml
 cssselect
+requests
