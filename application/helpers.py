@@ -1,3 +1,4 @@
+import glob
 import os
 import requests
 
@@ -6,7 +7,7 @@ from lxml import html
 from application.app_settings import app
 from application.sources.hqcelebrity import HqCelebritySource
 from application.sources.theplace import ThePlaceSource
-from carreck import CarreckSource
+from application.sources.carreck import CarreckSource
 
 
 sources = {
@@ -19,6 +20,7 @@ sources = {
 def open_url_ex(url, referrer='http://www.carreck.com/pictures/'):
     r = requests.get(url)
     return r
+
 
 def is_local():
     return app.config['USE_LOCAL']
@@ -60,8 +62,11 @@ def get_images(source, url, name):
             if not image:
                 continue
 
+            filename = SourceExtractor.get_path(image['src'], name)
+
             if is_local():
-                exists = os.path.exists(get_image_path(image['src'], name))
+                files = glob.glob("%s*" % filename)
+                exists = len(files) > 0
             else:
                 exists = False
 
@@ -82,4 +87,62 @@ def get_images(source, url, name):
         'id': id_,
         'pages': pages,
         'next_page': next_page,
+    }
+
+
+class SourceExtractor(object):
+    """
+    get image url even  if it
+    """
+
+    @classmethod
+    def get_type(cls, url):
+        for type, info in cls.TYPES.items():
+            if url.startswith(info['prefix']):
+                return info
+        return None
+
+    @classmethod
+    def get_src(cls, url, category_name):
+        type = cls.get_type(url)
+        if type is None:
+            return url, get_image_path(url, category_name)
+        else:
+            return type['src'](url, category_name), type['path'](url, category_name)
+
+
+    @classmethod
+    def get_path(cls, url, category_name):
+        type = cls.get_type(url)
+        if type is None:
+            return get_image_path(url, category_name)
+        else:
+            return type['path'](url, category_name)
+
+    # region imagebam.com
+    @staticmethod
+    def __get_imagebam_path(url, category_name):
+        filename = get_image_path(url, category_name)
+        return filename
+
+    @staticmethod
+    def __get_imagebam(url, category_name):
+        r = requests.get(url)
+        root = html.fromstring(r.text)
+
+        img = root.cssselect("#imageContainer img")
+        if len(img):
+            img = img[-1]
+        else:
+            return ""
+
+        return img.get("src")
+    # endregion
+
+    TYPES = {
+        'imagebam': {
+            'prefix': 'http://www.imagebam.com/',
+            'src': lambda url, category_name: SourceExtractor.__get_imagebam(url, category_name),
+            'path': lambda url, category_name: SourceExtractor.__get_imagebam_path(url, category_name)
+        }
     }

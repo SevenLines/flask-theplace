@@ -10,7 +10,7 @@ from sqlalchemy import or_, and_
 from werkzeug.wrappers import Response
 
 from application.app_settings import app
-from application.helpers import get_albums, get_images, get_image_path, is_local, sources
+from application.helpers import get_albums, get_images, get_image_path, is_local, sources, SourceExtractor
 from application.models import db, Category
 from helpers import open_url_ex
 
@@ -29,7 +29,7 @@ def update():
 
             def get():
                 for source_name in _sources:
-                    Category.query.filter(Category.source_name==source_name).delete()
+                    Category.query.filter(Category.source_name == source_name).delete()
                     for category in get_albums(source_name):
                         db.session.add(Category(name=category['name'],
                                                 source_name=source_name,
@@ -40,12 +40,14 @@ def update():
                         yield "data: %s\n\n" % status
                     db.session.commit()
                 yield "data: $done\n\n"
+
             out = get()
             return Response(out, mimetype="text/event-stream")
         else:
             return render_template("theplace/update.html", sources=sources)
     else:
         return redirect(url_for("index"))
+
 
 @app.route('/items/images')
 def images():
@@ -78,13 +80,12 @@ def download():
         url = request.form.get('url')
         name = request.form.get('name', '_')
 
-        r = open_url_ex(url)
-        # r = urllib2.Request(url, None,
-        #                     headers={'User-Agent': 'I just wanna get some of your pictures. Thanks for your work',
-        #                              'Referer': 'localhost'})
-        # r = urlopen(r)
+        src, filename = SourceExtractor.get_src(url, name)
+        ext = src.split('.')[-1]
+        if not filename.endswith(ext):
+            filename = "%s.%s" % (filename, ext)
 
-        filename = get_image_path(url, name)
+        r = open_url_ex(src)
 
         if not os.path.exists(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename))
