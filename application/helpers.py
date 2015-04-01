@@ -18,7 +18,11 @@ sources = {
 
 
 def open_url_ex(url, referrer='http://www.carreck.com/pictures/'):
-    r = requests.get(url)
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:36.0) Gecko/20100101 Firefox/36.0',
+        'Referer': referrer
+    }
+    r = requests.get(url, headers=headers)
     return r
 
 
@@ -137,6 +141,7 @@ class SourceExtractor(object):
             return ""
 
         return img.get("src")
+
     # endregion
 
     TYPES = {
