@@ -1,4 +1,5 @@
 import glob
+import imghdr
 import os
 from urllib2 import urlopen
 import urllib2
@@ -88,6 +89,11 @@ def download():
 
         r = open_url_ex(src)
 
+        what = imghdr.what(None, r.content)
+        print what
+        # if not what:
+        #     flask.abort(406)
+
         if not os.path.exists(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename))
 
@@ -112,6 +118,13 @@ def remove():
             flask.abort(404)
     else:
         return flask.abort(405)
+
+
+@app.route('/image-src')
+def image_src():
+    url = request.args.get('url')
+    src = SourceExtractor.get_src(url, "_")
+    return src[0]
 
 
 @app.route('/categories/query')

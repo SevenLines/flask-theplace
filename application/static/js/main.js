@@ -15,7 +15,7 @@ function PhotosModel(settings) {
 	(function () {
 		var lastPosX = -1;
 		var entered = false;
-		$(".right-column").click(function() {
+		$(".right-column").click(function () {
 			$(".right-column").toggleClass("hovered");
 		});
 		//$(".hover-area").hover(function (e) {
@@ -46,21 +46,22 @@ function PhotosModel(settings) {
 		Mustache.parse(templateSectionItem);
 
 		function setImage(event) {
-			console.log("cool");
 			if (self.downloadClick) {
 				self.downloadClick = false;
 			} else {
 				var image = document.getElementById("image-preview");
 				image.src = "";
 				$(image).parent().addClass("loading");
-				setTimeout(function () {
-					image.src = event.currentTarget.href;
+				$.get(settings.urls.image_url, {
+					'url': event.currentTarget.href
+				}).done(function (real_src) {
+					image.src = real_src;
 					$(image).one("load", function () {
 						$(image).parent().removeClass("loading");
 					}).each(function () {
 						if (this.complete) $(this).load();
 					});
-				}, 300);
+				});
 
 				return false;
 			}
@@ -81,7 +82,7 @@ function PhotosModel(settings) {
 
 				var next_page = "";
 				if (pages.length > 1) {
-					next_page = pages[currentPage+1]
+					next_page = pages[currentPage + 1]
 				} else {
 					next_page = self.currentNextPage;
 				}
@@ -188,7 +189,7 @@ function PhotosModel(settings) {
 
 					var next_page = "";
 					if (pages.length > 1) {
-						next_page = pages[currentPage+1]
+						next_page = pages[currentPage + 1]
 					} else {
 						next_page = self.currentNextPage;
 					}
