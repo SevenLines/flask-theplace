@@ -74,8 +74,8 @@ function PhotosModel(settings) {
 			if ($('#theplace_search_query').select2('val')) {
 				$.cookie("lastCategory", $('#theplace_search_query').select2('val'), {expires: 7, path: '/'});
 			}
-			$("#images").empty();
 			fetchMore(url, function (response) {
+				$("#images").empty();
 				self.currentAlbumId = response.data.id;
 				self.currentCategoryName = response.name;
 
@@ -116,6 +116,10 @@ function PhotosModel(settings) {
 					page       : page + 1,
 					pages_count: pages.length
 				}));
+
+				if (ondone) {
+					ondone(response);
+				}
 
 				$("#images").append($images);
 				response.data.images.forEach(function (item) {
@@ -174,9 +178,7 @@ function PhotosModel(settings) {
 
 					$images.append($aimg);
 				});
-				if (ondone) {
-					ondone(response);
-				}
+
 				$(window).trigger('scroll');
 				$("#load-progress").hide();
 			});
