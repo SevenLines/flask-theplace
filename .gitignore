@@ -3,3 +3,4 @@
 .webassets-cache
 db/database.db
 env/
+tests/tests

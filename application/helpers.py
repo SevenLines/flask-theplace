@@ -32,9 +32,9 @@ def is_local():
     return app.config['USE_LOCAL']
 
 
-def get_image_path(url, category_name):
+def get_image_path(url, category_name, source):
     filename = url.split("/")[-1]
-    return os.path.join(app.config['SAVE_PATH'], category_name, filename)
+    return os.path.join(app.config['SAVE_PATH'], category_name, source, filename)
 
 
 def get_albums(source):
@@ -53,8 +53,8 @@ def get_albums(source):
             }
 
 
-def get_images(source, url, name):
-    source = sources[source]
+def get_images(source_name, url, name):
+    source = sources[source_name]
     response = open_url_ex(url, source.photos)
     response = response.text
 
@@ -68,7 +68,7 @@ def get_images(source, url, name):
             if not image:
                 continue
 
-            filename = SourceExtractor.get_path(image['src'], name)
+            filename = SourceExtractor.get_path(image['src'], name, source_name)
 
             if is_local():
                 files = glob.glob("%s*" % filename)
@@ -109,26 +109,26 @@ class SourceExtractor(object):
         return None
 
     @classmethod
-    def get_src(cls, url, category_name):
+    def get_src(cls, url, category_name, source):
         type = cls.get_type(url)
         if type is None:
-            return url, get_image_path(url, category_name)
+            return url, get_image_path(url, category_name, source)
         else:
-            return type['src'](url, category_name), type['path'](url, category_name)
+            return type['src'](url, category_name), type['path'](url, category_name, source)
 
 
     @classmethod
-    def get_path(cls, url, category_name):
+    def get_path(cls, url, category_name, source):
         type = cls.get_type(url)
         if type is None:
-            return get_image_path(url, category_name)
+            return get_image_path(url, category_name, source)
         else:
-            return type['path'](url, category_name)
+            return type['path'](url, category_name, source)
 
     # region imagebam.com
     @staticmethod
-    def __get_imagebam_path(url, category_name):
-        filename = get_image_path(url, category_name)
+    def __get_imagebam_path(url, category_name, source):
+        filename = get_image_path(url, category_name, source)
         return filename
 
     @staticmethod
@@ -147,10 +147,10 @@ class SourceExtractor(object):
     # endregion
 
     @staticmethod
-    def __get_imagevenue_path(url, category_name):
+    def __get_imagevenue_path(url, category_name, source):
         m = re.search(SourceExtractor.TYPES['imagevenue']['pattern'], url)
         if m:
-            return get_image_path(m.group(2), category_name)
+            return get_image_path(m.group(2), category_name, source)
         else:
             return None
 
@@ -175,11 +175,11 @@ class SourceExtractor(object):
         'imagebam': {
             'pattern': r'^http://www.imagebam.com/',
             'src': lambda url, category_name: SourceExtractor.__get_imagebam(url, category_name),
-            'path': lambda url, category_name: SourceExtractor.__get_imagebam_path(url, category_name)
+            'path': lambda url, category_name, source: SourceExtractor.__get_imagebam_path(url, category_name, source)
         },
         'imagevenue': {
             'pattern': r'http://img(\d+)\.imagevenue.com/img.php\?image=((\w+)\.(\w+))',
             'src': lambda url, category_name: SourceExtractor.__get_imagevenue(url, category_name),
-            'path': lambda url, category_name: SourceExtractor.__get_imagevenue_path(url, category_name)
+            'path': lambda url, category_name, source: SourceExtractor.__get_imagevenue_path(url, category_name, source)
         }
     }

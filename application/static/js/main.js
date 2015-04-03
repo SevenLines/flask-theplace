@@ -37,6 +37,7 @@ function PhotosModel(settings) {
 
 	$(document).ready(function () {
 		var currentPage = 1;
+		var currentSource = '';
 		var lastPage = currentPage;
 		var pages = [];
 
@@ -79,7 +80,6 @@ function PhotosModel(settings) {
 				self.currentAlbumId = response.data.id;
 				self.currentCategoryName = response.name;
 
-
 				var next_page = "";
 				if (pages.length > 1) {
 					next_page = pages[currentPage + 1]
@@ -106,6 +106,7 @@ function PhotosModel(settings) {
 			}).done(function (response) {
 				self.is_local = response.is_local;
 				self.currentNextPage = response.data.next_page;
+				self.currentSourceName = response.source;
 				var page = currentPage + 1;
 
 				if (pages.length == 0) {
@@ -142,7 +143,8 @@ function PhotosModel(settings) {
 							$aimg.addClass("loading");
 							$.post(settings.urls.download, {
 								url : $(e.currentTarget).parent()[0].href,
-								name: self.currentCategoryName
+								name: self.currentCategoryName,
+								source: self.currentSourceName,
 							}).done(function () {
 								$aimg.addClass("exists");
 							}).always(function () {
@@ -151,12 +153,8 @@ function PhotosModel(settings) {
 						} else {
 							var link = document.createElement('a');
 							link.href = $(e.currentTarget).parent()[0].href;
-							//link.download = "cool";
 							document.body.appendChild(link);
 							link.click();
-							//document.body.removeChild(link);
-							//self.downloadClick = true;
-							//$aimg.click();
 						}
 						return false;
 					});
@@ -166,7 +164,8 @@ function PhotosModel(settings) {
 							$aimg.addClass("loading");
 							$.post(settings.urls.remove, {
 								url : $(e.currentTarget).parent()[0].href,
-								name: self.currentCategoryName
+								name: self.currentCategoryName,
+								source: self.currentSourceName,
 							}).done(function () {
 								$aimg.removeClass("exists");
 							}).always(function () {

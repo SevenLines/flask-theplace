@@ -1,9 +1,11 @@
 import os
+from flask.ext.migrate import Migrate
 from flask.ext.sqlalchemy import SQLAlchemy
 from application.app_settings import app, ROOT_DIR
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///%s' % os.path.join(ROOT_DIR, 'db/database.db')
 db = SQLAlchemy(app)
+migrate = Migrate(app, db, directory=os.path.join(ROOT_DIR, "db/migrations"))
 
 class Source(db.Model):
     id = db.Column(db.Integer, primary_key=True)

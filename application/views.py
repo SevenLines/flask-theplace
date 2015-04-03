@@ -73,7 +73,7 @@ def images():
     name = category.name if category else ''
     _images = get_images(source_name, url, name)
     if request.is_xhr:
-        return jsonify(data=_images, name=name, is_local=is_local())
+        return jsonify(data=_images, name=name, is_local=is_local(), source=source_name)
 
 
 @app.route('/download', methods=["POST", ])
@@ -81,8 +81,9 @@ def download():
     if is_local():
         url = request.form.get('url')
         name = request.form.get('name', '_')
+        source = request.form.get('source', '')
 
-        src, filename = SourceExtractor.get_src(url, name)
+        src, filename = SourceExtractor.get_src(url, name, source)
         ext = src.split('.')[-1]
         if not filename.endswith(ext):
             filename = "%s.%s" % (filename, ext)
@@ -90,16 +91,16 @@ def download():
         r = open_url_ex(src)
 
         what = imghdr.what(None, r.content)
-        print what
-        # if not what:
-        #     flask.abort(406)
+        print "%s: %s" % (what if what else '!none', url)
+        if not what:
+            flask.abort(406)
 
         if not os.path.exists(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename))
 
         with open(filename, mode='wb') as f:
             f.write(r.content)
-        return ""
+        return filename
     else:
         return flask.abort(405)
 
@@ -109,7 +110,8 @@ def remove():
     if is_local():
         url = request.form.get('url')
         name = request.form.get('name', '_')
-        filename = SourceExtractor.get_path(url, name)
+        source = request.form.get('source', '')
+        filename = SourceExtractor.get_path(url, name, source)
         files = glob.glob("%s*" % filename)
         if len(files) == 1:
             os.remove(files[0])
@@ -123,7 +125,7 @@ def remove():
 @app.route('/image-src')
 def image_src():
     url = request.args.get('url')
-    src = SourceExtractor.get_src(url, "_")
+    src = SourceExtractor.get_src(url, "_", 'source')
     return src[0]
 
 
