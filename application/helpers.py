@@ -32,8 +32,8 @@ def is_local():
     return app.config['USE_LOCAL']
 
 
-def get_image_path(url, category_name, source):
-    filename = url.split("/")[-1]
+def get_image_path(filename, category_name, source):
+    # filename = url.split("/")[-1]
     return os.path.join(app.config['SAVE_PATH'], category_name, source, filename)
 
 
@@ -105,34 +105,40 @@ class SourceExtractor(object):
     def get_type(cls, url):
         for type, info in cls.TYPES.items():
             if re.search(info['pattern'], url):
-                return info
-        return None
+                return info, type
+        return None, ""
 
     @classmethod
     def get_src(cls, url, category_name, source):
-        type = cls.get_type(url)
+        type, type_name = cls.get_type(url)
+        path = cls.__get_path(url, category_name, source, type, type_name)
         if type is None:
-            return url, get_image_path(url, category_name, source)
+            return url, path
         else:
-            return type['src'](url, category_name), type['path'](url, category_name, source)
+            return type['src'](url, category_name), path
 
 
     @classmethod
     def get_path(cls, url, category_name, source):
-        type = cls.get_type(url)
+        type, type_name = cls.get_type(url)
+        return cls.__get_path(url, category_name, source, type, type_name)
+
+    @classmethod
+    def __get_path(cls, url, category_name, source, type, type_name):
         if type is None:
-            return get_image_path(url, category_name, source)
+            filename = url.split('/')[-1]
         else:
-            return type['path'](url, category_name, source)
+            filename = type['filename'](url)
+        return get_image_path("%s%s" % (type_name, filename), category_name, source)
+
 
     # region imagebam.com
-    @staticmethod
-    def __get_imagebam_path(url, category_name, source):
-        filename = get_image_path(url, category_name, source)
-        return filename
+    @classmethod
+    def __get_imagebam_name(cls, url):
+        return url.split('/')[-1]
 
-    @staticmethod
-    def __get_imagebam(url, category_name):
+    @classmethod
+    def __get_imagebam(cls, url, category_name):
         r = requests.get(url)
         root = html.fromstring(r.text)
 
@@ -146,21 +152,24 @@ class SourceExtractor(object):
 
     # endregion
 
-    @staticmethod
-    def __get_imagevenue_path(url, category_name, source):
-        m = re.search(SourceExtractor.TYPES['imagevenue']['pattern'], url)
+    # region imagevenue
+    @classmethod
+    def __get_imagevenue_name(cls, url):
+        m = re.search(cls.TYPES['imagevenue']['pattern'], url)
         if m:
-            return get_image_path(m.group(2), category_name, source)
+            return m.group(2)
         else:
-            return None
+            ""
+        #     return get_image_path(m.group(2), category_name, source)
+        # else:
+        #     return None
 
-    @staticmethod
-    def __get_imagevenue(url, category_name):
+    @classmethod
+    def __get_imagevenue(cls, url, category_name):
         r = requests.get(url)
         root = html.fromstring(r.text)
 
-        m = re.search(SourceExtractor.TYPES['imagevenue']['pattern'], url)
-
+        m = re.search(cls.TYPES['imagevenue']['pattern'], url)
 
         img = root.cssselect("#thepic")
         if len(img):
@@ -170,16 +179,47 @@ class SourceExtractor(object):
 
         return urljoin(url, img.get("src"))
 
+    # endregion
+
+    # region imgbox
+    @classmethod
+    def __get_imgbox(cls, url, category_name):
+        r = requests.get(url)
+        root = html.fromstring(r.text)
+
+        img = root.cssselect(".image-container img")
+        if len(img):
+            img = img[-1]
+        else:
+            return ""
+        return img.get('src')
+
+
+
+    @classmethod
+    def __get_imgbox_name(cls, url):
+        m = re.search(cls.TYPES['imgbox']['pattern'], url)
+        if m:
+            return m.group(1)
+        else:
+            return None
+    # endregion
+
 
     TYPES = {
         'imagebam': {
             'pattern': r'^http://www.imagebam.com/',
             'src': lambda url, category_name: SourceExtractor.__get_imagebam(url, category_name),
-            'path': lambda url, category_name, source: SourceExtractor.__get_imagebam_path(url, category_name, source)
+            'filename': lambda url: SourceExtractor.__get_imagebam_name(url)
         },
         'imagevenue': {
-            'pattern': r'http://img(\d+)\.imagevenue.com/img.php\?image=((\w+)\.(\w+))',
+            'pattern': r'^http://img(\d+)\.imagevenue.com/img.php\?image=((\w+)\.(\w+))',
             'src': lambda url, category_name: SourceExtractor.__get_imagevenue(url, category_name),
-            'path': lambda url, category_name, source: SourceExtractor.__get_imagevenue_path(url, category_name, source)
+            'filename': lambda url: SourceExtractor.__get_imagevenue_name(url)
+        },
+        'imgbox': {
+            'pattern': r'^http://imgbox.com/(\w+)',
+            'src': lambda url, category_name: SourceExtractor.__get_imgbox(url, category_name),
+            'filename': lambda url: SourceExtractor.__get_imgbox_name(url)
         }
     }

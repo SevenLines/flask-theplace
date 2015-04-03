@@ -1,6 +1,7 @@
 import glob
 import imghdr
 import os
+import re
 from urllib2 import urlopen
 import urllib2
 import time
@@ -90,9 +91,10 @@ def download():
 
         r = open_url_ex(src)
 
-        what = imghdr.what(None, r.content)
-        print "%s: %s" % (what if what else '!none', url)
-        if not what:
+        # what = imghdr.what(None, r.content)
+        # print "%s: %s" % (what if what else '!none', url)
+        # if not what:
+        if not re.search('image/.*', r.headers['content-type']):
             flask.abort(406)
 
         if not os.path.exists(os.path.dirname(filename)):
@@ -134,7 +136,6 @@ def query_categories():
     query = request.args.get('query')
     categories = Category.query.filter(Category.name.like(u"%{query}%".format(query=query)))
     return jsonify(items=list([c.serialize() for c in categories]))
-
 
 @app.route('/')
 def index():

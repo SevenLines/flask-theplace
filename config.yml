@@ -3,3 +3,4 @@ SAVE_PATH:
   unix: '/mnt/homeworld/_IMAGES/_PPL'
 USE_LOCAL: true
 DEBUG: true
+ASSETS_DEBUG: false

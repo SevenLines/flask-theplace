@@ -2,6 +2,7 @@ from application.app_settings import app
 from flask.ext.assets import Environment, Bundle
 
 assets = Environment(app)
+assets.auto_build = app.config['ASSETS_DEBUG']
 
 js = Bundle('vendor/jquery/dist/jquery.min.js',
             'vendor/jquery.lazyload/jquery.lazyload.js',
@@ -21,6 +22,7 @@ js = Bundle('vendor/jquery/dist/jquery.min.js',
 
 css = Bundle('vendor/select2/dist/css/select2.min.css',
              'vendor/fontawesome/css/font-awesome.min.css',
+             'css/select2-bootstrap.css',
              'vendor/bootstrap/dist/css/bootstrap.css',
              'css/bootstrap-flatty.min.css',
              'sass/style.css',
@@ -30,5 +32,4 @@ css = Bundle('vendor/select2/dist/css/select2.min.css',
 assets.register('js_all', js)
 assets.register('css_all', css)
 
-assets.debug = app.debug
-app.config['ASSETS_DEBUG'] = assets.debug
+assets.debug = app.config['ASSETS_DEBUG']

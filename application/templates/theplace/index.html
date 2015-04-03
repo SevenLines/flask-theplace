@@ -2,7 +2,7 @@
 {%- import "macros.html" as macros %}
 {%- block menu %}
 <div class="navbar-form pull-left">
-    <select style="min-width: 200px" name="query" id="theplace_search_query" class="form-control">
+    <select style="min-width: 200px" name="query" id="theplace_search_query">
     </select>
 </div>
 {%- endblock %}
@@ -19,7 +19,6 @@
         <div class="clearfix"></div>
     </div>
     <div class="right-column">
-        <div class="hover-area"></div>
         <img id="image-preview"/>
         <i class="fa fa-spinner fa-pulse fa-5x load-icon"></i>
     </div>

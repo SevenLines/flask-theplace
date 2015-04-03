@@ -29,6 +29,8 @@ else:
     save_path = '.'
 
 app.config['SAVE_PATH'] = save_path
+app.config['ASSETS_DEBUG'] = config.get('ASSETS_DEBUG', False)
+
 
 
 

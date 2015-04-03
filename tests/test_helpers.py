@@ -11,7 +11,7 @@ class TestHelpers(TestCase):
     image_venue_src = 'http://img285.imagevenue.com/img.php?image=157538130_HQ_002_122_110lo.jpg'
 
     def test_source_extractor_get_src_for_imagebam(self):
-        src, path = SourceExtractor.get_src(self.image_bam_src, '_')
+        src, path = SourceExtractor.get_src(self.image_bam_src, '_', 'source')
         self.assertNotEqual(src, "")
         self.assertTrue(path.endswith("e722cc393497689"))
 
@@ -21,7 +21,7 @@ class TestHelpers(TestCase):
 
 
     def test_source_extractor_get_src_for_imagevenue(self):
-        src, path = SourceExtractor.get_src(self.image_venue_src, '_')
+        src, path = SourceExtractor.get_src(self.image_venue_src, '_', 'source')
         self.assertNotEqual(src, "")
         self.assertTrue(path.endswith("157538130_HQ_002_122_110lo.jpg"))
 
@@ -31,8 +31,8 @@ class TestHelpers(TestCase):
 
 
     def test_get_type(self):
-        type = SourceExtractor.get_type(self.image_bam_src)
+        type, type_name = SourceExtractor.get_type(self.image_bam_src)
         self.assertEqual(SourceExtractor.TYPES['imagebam'], type)
 
-        type = SourceExtractor.get_type(self.image_venue_src)
+        type, type_name = SourceExtractor.get_type(self.image_venue_src)
         self.assertEqual(SourceExtractor.TYPES['imagevenue'], type)
