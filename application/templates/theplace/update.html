@@ -12,7 +12,7 @@
     <div class="" style="margin-top:80px;">
         <div class="col-md-3">
             <div id="update_sources" class="list-group">
-                <a href="" class="list-group-item">
+                <a href="" id="full_update" class="list-group-item">
                     update all
                 </a>
                 {% for source in sources %}
@@ -46,5 +46,10 @@
 
           return false;
         });
+
+        {% if force_update %}
+            $("#full_update").click();
+        {% endif %}
+
     </script>
 {% endblock %}

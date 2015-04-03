@@ -7,6 +7,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///%s' % os.path.join(ROOT_DIR, 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db, directory=os.path.join(ROOT_DIR, "db/migrations"))
 
+
+class Setting(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(20), index=True)
+    value = db.Column(db.String(256))
+
 class Source(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))

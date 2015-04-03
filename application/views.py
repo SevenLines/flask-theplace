@@ -47,7 +47,8 @@ def update():
             out = get()
             return Response(out, mimetype="text/event-stream")
         else:
-            return render_template("theplace/update.html", sources=sources)
+            force_update = request.args.get('force_update', False)
+            return render_template("theplace/update.html", sources=sources, force_update=force_update)
     else:
         return redirect(url_for("index"))
 
@@ -142,5 +143,5 @@ def index():
     if is_local():
         upgrade()
         if not Category.query.count():
-            return redirect(url_for("update"))
+            return redirect(url_for("update", force_update=True))
     return render_template("theplace/index.html")
