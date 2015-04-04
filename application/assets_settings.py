@@ -6,6 +6,7 @@ assets.auto_build = app.config['ASSETS_DEBUG']
 
 js = Bundle('vendor/jquery/dist/jquery.min.js',
             'vendor/jquery.lazyload/jquery.lazyload.js',
+            'vendor/jquery-ui/jquery-ui.js',
             # 'vendor/bootstrap/dist/js/bootstrap.js',
             'vendor/select2/dist/js/select2.js',
             'vendor/lodash/lodash.min.js',
@@ -22,6 +23,7 @@ js = Bundle('vendor/jquery/dist/jquery.min.js',
 
 css = Bundle('vendor/select2/dist/css/select2.min.css',
              'vendor/fontawesome/css/font-awesome.min.css',
+             'vendor/jquery-ui/themes/cupertino/jquery-ui.css',
              'css/select2-bootstrap.css',
              'vendor/bootstrap/dist/css/bootstrap.css',
              'css/bootstrap-flatty.min.css',

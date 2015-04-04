@@ -169,3 +169,8 @@
     display: none; }
   .right-column.loading .load-icon {
     display: block; }
+
+#pager {
+  height: 100%;
+  margin-left: 25px;
+  margin-bottom: 70px; }

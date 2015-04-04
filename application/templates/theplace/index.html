@@ -1,64 +1,68 @@
 {% extends "index.html" %}
 {%- import "macros.html" as macros %}
 {%- block menu %}
-<div class="navbar-form pull-left">
-    <select style="min-width: 200px" name="query" id="theplace_search_query">
-    </select>
-</div>
+    <div class="navbar-form">
+        <select class="form-control" style="min-width: 200px" name="query" id="theplace_search_query">
+        </select>
+    </div>
 {%- endblock %}
 
 {%- block body %}
 
-<div class="row">
-    <div class="left-column">
-        <div id="pages"></div>
-        <div id="images"></div>
-        <div id="load-progress">
-            <i class="fa fa-spinner fa-pulse fa-5x"></i>
+    <div class="row">
+        <div class="left-column">
+            <div id="pages">
+                <div style="clear: both; height: 100%; padding-bottom: 15px; padding-top: 70px">
+                    <div id="pager"></div>
+                </div>
+            </div>
+            <div id="images"></div>
+            <div id="load-progress">
+                <i class="fa fa-spinner fa-pulse fa-5x"></i>
+            </div>
+            <div class="clearfix"></div>
         </div>
-        <div class="clearfix"></div>
+        <div class="right-column">
+            <img id="image-preview"/>
+            <i class="fa fa-spinner fa-pulse fa-5x load-icon"></i>
+        </div>
     </div>
-    <div class="right-column">
-        <img id="image-preview"/>
-        <i class="fa fa-spinner fa-pulse fa-5x load-icon"></i>
-    </div>
-</div>
 
-{% raw %}
-<div id="template-image-item" class="template">
-    <a class="image {{ exists }}" href="{{ src }}">
-        <div class="saveme">
-            <i class="fa fa-save"></i>
-            <i class="fa fa-spinner fa-pulse"></i>
-        </div>
-        <div class="removeme">
-            <i class="fa fa-remove"></i>
-            <i class="fa fa-spinner fa-pulse"></i>
-        </div>
-        <img data-original="{{ thumbnail }}" >
-    </a>
-</div>
-<div class="template" id="template-section-item">
-<section class="section">
-    <div class="page">
-        <h2>{{ page }} / {{ pages_count }}</h2>
+    {% raw %}
+    <div id="template-image-item" class="template">
+        <a class="image {{ exists }}" href="{{ src }}">
+            <div class="saveme">
+                <i class="fa fa-save"></i>
+                <i class="fa fa-spinner fa-pulse"></i>
+            </div>
+            <div class="removeme">
+                <i class="fa fa-remove"></i>
+                <i class="fa fa-spinner fa-pulse"></i>
+            </div>
+            <img data-original="{{ thumbnail }}">
+        </a>
     </div>
-    <hr/>
-    <div class="clearfix"></div>
-</section>
-</div>
-{% endraw %}
+    <div class="template" id="template-section-item">
+        <section class="section section{{ page }}">
+            <div class="page">
+                <h2>{{ page }} / {{ pages_count }}</h2>
+            </div>
+            <hr/>
+            <div class="clearfix"></div>
+        </section>
+    </div>
+    {% endraw %}
 
-<script>
-    new PhotosModel({
-        urls: {
-            images          : "{{ url_for("images") }}",
-            query_categories: "{{ url_for("query_categories") }}",
-            download        : "{{ url_for("download") }}",
-            remove          : "{{ url_for("remove") }}",
-            image_url       : "{{ url_for("image_src") }}"
-        }
-    })
-</script>
+    <script>
+        new PhotosModel({
+            urls: {
+                images          : "{{ url_for("images") }}",
+                query_categories: "{{ url_for("query_categories") }}",
+                download        : "{{ url_for("download") }}",
+                remove          : "{{ url_for("remove") }}",
+                image_url       : "{{ url_for("image_src") }}"
+            }
+        })
+    </script>
 
 {%- endblock %}
