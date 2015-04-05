@@ -47,7 +47,7 @@ function PhotosModel(settings) {
 			pageInfo.fadeIn("fast");
 		},
 		slide      : function (e, ui) {
-			var page = (pages.length - ui.value);
+			var page = (pages().length - ui.value);
 			var handle = $("#pager .ui-slider-handle");
 			pageInfo.offset({
 				top : handle.offset().top,
@@ -185,9 +185,9 @@ function PhotosModel(settings) {
 						}).always(function () {
 							$aimg.removeClass("loading");
 						});
-					} else {
-						var link = document.createElement('a');
-						link.href = $(e.currentTarget).parent()[0].href;
+					//} else {
+					//	var link = document.createElement('a');
+					//	link.href = $(e.currentTarget).parent()[0].href;
 						document.body.appendChild(link);
 						link.click();
 					}

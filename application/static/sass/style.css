@@ -4,7 +4,8 @@
   top: 0;
   bottom: 0;
   position: fixed;
-  box-shadow: 4px 0 8px #eee; }
+  box-shadow: 4px 0 8px #eee;
+  z-index: 1000; }
 
 .template {
   display: none; }
@@ -177,7 +178,7 @@
 
 #page-info {
   position: absolute;
-  z-index: 1000;
+  z-index: 9999;
   background-color: #ffffff;
   padding: 0.25em;
   border: 1px solid silver;

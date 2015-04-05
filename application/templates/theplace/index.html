@@ -18,7 +18,7 @@
                 </div>
             </div>
             <div id="images" data-bind="foreach: {data:pages, afterRender: initPage }">
-                <section class="section">
+                <section class="section" data-bind="css: css">
                     <div class="page">
                         <h2>
                             <span data-bind="text: index"></span> /
@@ -28,12 +28,12 @@
                     <hr/>
                     <div class="clearfix"></div>
                     <div data-bind="foreach: { data: images, afterRender: setupImage }">
-                        <a class="image" data-bind="attr: {href: src},  css: css">
-                            <div class="saveme">
+                        <a class="image" data-bind="attr: {href: src},  css: css, click: preview">
+                            <div class="saveme" data-bind="click: download">
                                 <i class="fa fa-save"></i>
                                 <i class="fa fa-spinner fa-pulse"></i>
                             </div>
-                            <div class="removeme">
+                            <div class="removeme" data-bind="click: remove">
                                 <i class="fa fa-remove"></i>
                                 <i class="fa fa-spinner fa-pulse"></i>
                             </div>
@@ -53,22 +53,6 @@
             <i class="fa fa-spinner fa-pulse fa-5x load-icon"></i>
         </div>
     </div>
-
-    {#    {% raw %}#}
-    {#    <div id="template-image-item" class="template">#}
-    {#        <a class="image {{ exists }}" href="{{ src }}">#}
-    {#            <div class="saveme">#}
-    {#                <i class="fa fa-save"></i>#}
-    {#                <i class="fa fa-spinner fa-pulse"></i>#}
-    {#            </div>#}
-    {#            <div class="removeme">#}
-    {#                <i class="fa fa-remove"></i>#}
-    {#                <i class="fa fa-spinner fa-pulse"></i>#}
-    {#            </div>#}
-    {#            <img data-original="{{ thumbnail }}">#}
-    {#        </a>#}
-    {#    </div>#}
-    {#    {% endraw %}#}
 
     <!-- SCRIPTS -->
     <script src="{{ url_for("static", filename="vendor/requirejs/require.js") }}"></script>

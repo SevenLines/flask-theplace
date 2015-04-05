@@ -11,41 +11,46 @@ define(['app/page', 'knockout', 'urls'], function (Page, ko, urls) {
 		self.pages = ko.observableArray([]);
 
 		function init() {
-			function onScroll() {
-				if ($(window).scrollTop() >= $(document).height() - $(window).height() - 600) {
-					if (lastPage != currentPage) {
-
-						var next_page = "";
-						if (pages.length > 1) {
-							next_page = pages[currentPage + 1]
-						} else {
-							next_page = self.currentNextPage;
+			var pageInfo = $("#page-info");
+			self.pager = $("#pager").slider({
+				orientation: "vertical",
+				stop: function (e, ui) {
+					var page = (self.pages().length - ui.value);
+					pageInfo.fadeOut("fast");
+					self.pages()[page - 1].load(function () {
+						var section = $(".section" + page);
+						if (section.size()) {
+							$('html, body').animate({
+								scrollTop: section.offset().top - 60
+							}, 200);
 						}
-
-						fetchMore(next_page, function (response) {
-							currentPage++;
-						});
-						lastPage = currentPage;
-					}
+					});
+				},
+				start: function () {
+					pageInfo.fadeIn("fast");
+				},
+				slide: function (e, ui) {
+					var page = (self.pages().length - ui.value);
+					var handle = $("#pager .ui-slider-handle");
+					pageInfo.offset({
+						top: handle.offset().top,
+						left: 30
+					});
+					pageInfo.text(page);
 				}
-			}
-
-			$(window).scroll(onScroll);
+			});
 		}
 
 		self.initPage = function (element, page) {
 			$(window).scroll(function () {
 				if (!page.loaded()) {
+					var $el = $(element[1]);
+					var screenTop = $(window).scrollTop() - 600;
+					var screenBottom = $(window).scrollTop() + $(window).height() + 600;
+					var offset = $el.offset();
+					offset.bottom = $el.height() + offset.top;
 					if (page.previous_page && page.previous_page.loaded()) {
-						var offset = $(element[1]).offset();
-						var screenBottom = $(window).scrollTop() + $(window).height() + 600;
-						if (offset.top < screenBottom) {
-							page.load();
-						}
-					} else if (page.next_page && page.next_page.loaded()) {
-						var offset = $(element[1]).offset();
-						var screenTop = $(window).scrollTop() + $(window).height() + 600;
-						if (offset.top < screenBottom) {
+						if (offset.top > screenTop && offset.bottom < screenBottom) {
 							page.load();
 						}
 					}
@@ -60,6 +65,8 @@ define(['app/page', 'knockout', 'urls'], function (Page, ko, urls) {
 			}).done(function (r) {
 				self.name(r.name);
 				self.source(r.source);
+				self.pager.slider("option", "max", r.data.pages.length - 1);
+				self.pager.slider("option", "value", r.data.pages.length - 1);
 
 				var previousPage = null;
 
@@ -91,5 +98,7 @@ define(['app/page', 'knockout', 'urls'], function (Page, ko, urls) {
 			});
 
 		};
+
+		init();
 	}
 });

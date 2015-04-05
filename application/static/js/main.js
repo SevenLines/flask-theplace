@@ -17,17 +17,17 @@ require(['app/model', 'urls', 'knockout'],
 		ko.applyBindings(photoModel);
 
 		$('#theplace_search_query').select2({
-			placeholder       : "Enter name",
-			allowClear        : true,
+			placeholder: "Enter name",
+			allowClear: true,
 			minimumInputLength: 2,
-			ajax              : {
-				url           : urls.query_categories,
-				dataType      : 'json',
-				delay         : 250,
-				data          : function (params) {
+			ajax: {
+				url: urls.query_categories,
+				dataType: 'json',
+				delay: 250,
+				data: function (params) {
 					return {
 						query: params.term, // search term
-						page : params.page
+						page: params.page
 					};
 				},
 				processResults: function (data, page) {
@@ -45,7 +45,7 @@ require(['app/model', 'urls', 'knockout'],
 						item.children = data.items.map(function (el) {
 							if (el.source_name == item.text) {
 								return {
-									'id'  : el.local_url,
+									'id': el.local_url,
 									'text': el.name
 								}
 							}
@@ -61,6 +61,14 @@ require(['app/model', 'urls', 'knockout'],
 		}).on('change', function (e) {
 			photoModel.select(e.currentTarget.value);
 		});
+
+		(function () {
+			var lastPosX = -1;
+			var entered = false;
+			$(".right-column").click(function () {
+				$(".right-column").toggleClass("hovered");
+			});
+		})();
 
 		if ($.cookie("lastCategory") && $.cookie("lastCategory") != "null") {
 			photoModel.select($.cookie("lastCategory"));

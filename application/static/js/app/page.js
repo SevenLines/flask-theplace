@@ -9,17 +9,19 @@ define(['urls', 'knockout', 'app/image'], function (urls, ko, Image) {
 		self.index = index;
 		self.next_page = null;
 		self.previous_page = null;
+		self.model = model;
 
 		self.loaded = ko.observable(false);
 		self.loading = ko.observable(false);
 
 		self.css = ko.pureComputed(function () {
-			[
-				!self.loaded() && !self.loading() ? "hidden" : ""
-			].join("")
+			return [
+				!self.loaded() && !self.loading() ? "" : "",
+				"section" + self.index,
+			].join(" ")
 		});
 
-		self.load = function () {
+		self.load = function (ondone) {
 			if (self.loading()) {
 				return;
 			}
@@ -33,6 +35,9 @@ define(['urls', 'knockout', 'app/image'], function (urls, ko, Image) {
 						$(window).trigger('scroll');
 					}, 1000)
 				});
+				if (ondone) {
+					ondone(r);
+				}
 				self.loaded(true);
 			}).always(function () {
 				self.loading(false);
@@ -41,7 +46,7 @@ define(['urls', 'knockout', 'app/image'], function (urls, ko, Image) {
 
 		self.setImages = function (images, ondone) {
 			images.forEach(function (img) {
-				self.images.push(new Image(img));
+				self.images.push(new Image(img, self));
 			});
 			if (ondone) {
 				ondone(self);
