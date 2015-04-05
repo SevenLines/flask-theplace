@@ -40,11 +40,12 @@
                             <img class="lazy" data-bind="attr: {'data-original': thumbnail}">
                         </a>
                     </div>
+                    <div id="load-progress">
+                        <i class="fa fa-spinner fa-pulse fa-5x"></i>
+                    </div>
                 </section>
             </div>
-            <div id="load-progress">
-                <i class="fa fa-spinner fa-pulse fa-5x"></i>
-            </div>
+
 
             <div class="clearfix"></div>
         </div>
@@ -59,11 +60,11 @@
     <script>
         define("urls", function () {
             return {
-                images          : "{{ url_for("images") }}",
+                images: "{{ url_for("images") }}",
                 query_categories: "{{ url_for("query_categories") }}",
-                download        : "{{ url_for("download") }}",
-                remove          : "{{ url_for("remove") }}",
-                image_url       : "{{ url_for("image_src") }}"
+                download: "{{ url_for("download") }}",
+                remove: "{{ url_for("remove") }}",
+                image_url: "{{ url_for("image_src") }}"
             }
         })
     </script>

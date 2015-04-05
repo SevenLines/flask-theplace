@@ -7,6 +7,7 @@ define(['app/page', 'knockout', 'urls'], function (Page, ko, urls) {
 		var self = this;
 		self.name = ko.observable("");
 		self.source = ko.observable("");
+		self.id = ko.observable("");
 
 		self.pages = ko.observableArray([]);
 
@@ -51,7 +52,14 @@ define(['app/page', 'knockout', 'urls'], function (Page, ko, urls) {
 					offset.bottom = $el.height() + offset.top;
 					if (page.previous_page && page.previous_page.loaded()) {
 						if (offset.top > screenTop && offset.bottom < screenBottom) {
-							page.load();
+							page.load(function (r) {
+								if (page.next_page_url) {
+									var pageItem = new Page(self, self.pages().length + 1, page.next_page_url);
+									pageItem.previous_page = page;
+									self.pages.push(pageItem);
+								}
+							});
+							self.pager.slider("option", "max", self.pages().length - 1);
 						}
 					}
 				}
@@ -60,42 +68,87 @@ define(['app/page', 'knockout', 'urls'], function (Page, ko, urls) {
 
 		self.select = function (url) {
 			self.pages.removeAll();
-			$.get(urls.images, {
-				url: url
-			}).done(function (r) {
+			var page = new Page(self, 1, url);
+			self.pages.push(page);
+			page.load(function (r) {
 				self.name(r.name);
 				self.source(r.source);
-				self.pager.slider("option", "max", r.data.pages.length - 1);
-				self.pager.slider("option", "value", r.data.pages.length - 1);
+				self.id(r.data.id);
 
-				var previousPage = null;
+				var previousPage = page;
 
-				var page = new Page(self, 1, url);
-				page.setImages(r.data.images, function () {
-					setTimeout(function () {
-						$(window).trigger('scroll');
-					}, 1000)
-				});
-				self.pages.push(page);
-				previousPage = page;
+				//var page = new Page(self, 1, url, r.data.next_page);
+				//page.setImages(r.data.images, function () {
+				//	setTimeout(function () {
+				//		$(window).trigger('scroll');
+				//	}, 1000)
+				//});
+				//self.pages.push(page);
+				//previousPage = page;
 
-				r.data.pages.forEach(function (item, index) {
-					if (index == 0) {
-						return;
-					}
-					var page = new Page(self, index + 1, item);
-					if (previousPage) {
-						previousPage.next_page = page;
-						page.previous_page = previousPage;
-					}
+				if (r.data.pages.length) {
+					r.data.pages.forEach(function (item, index) {
+						if (index == 0) {
+							return;
+						}
+						var page = new Page(self, index + 1, item);
+						if (previousPage) {
+							previousPage.next_page = page;
+							page.previous_page = previousPage;
+						}
+						self.pages.push(page);
+						previousPage = page;
+					});
+				} else {
+					page = new Page(self, 2, r.data.next_page);
+					page.previous_page = previousPage;
 					self.pages.push(page);
 					previousPage = page;
-				});
-
-				if ($('#theplace_search_query').select2('val')) {
-					$.cookie("lastCategory", $('#theplace_search_query').select2('val'), {expires: 7, path: '/'});
 				}
+				self.pager.slider("option", "value", self.pages().length - 1);
+
 			});
+			//$.get(urls.images, {
+			//	url: url
+			//}).done(function (r) {
+			//	self.name(r.name);
+			//	self.source(r.source);
+			//
+			//
+			//	var previousPage = null;
+			//
+			//	var page = new Page(self, 1, url, r.data.next_page);
+			//	page.setImages(r.data.images, function () {
+			//		setTimeout(function () {
+			//			$(window).trigger('scroll');
+			//		}, 1000)
+			//	});
+			//	self.pages.push(page);
+			//	previousPage = page;
+			//
+			//	if (r.data.pages.length) {
+			//		r.data.pages.forEach(function (item, index) {
+			//			if (index == 0) {
+			//				return;
+			//			}
+			//			var page = new Page(self, index + 1, item);
+			//			if (previousPage) {
+			//				previousPage.next_page = page;
+			//				page.previous_page = previousPage;
+			//			}
+			//			self.pages.push(page);
+			//			previousPage = page;
+			//		});
+			//	} else {
+			//		page = new Page(self, 2, r.data.next_page);
+			//		page.previous_page = previousPage;
+			//		self.pages.push(page);
+			//		previousPage = page;
+			//	}
+			if ($('#theplace_search_query').select2('val')) {
+				$.cookie("lastCategory", $('#theplace_search_query').select2('val'), {expires: 7, path: '/'});
+			}
+			//});
 
 		};
 
