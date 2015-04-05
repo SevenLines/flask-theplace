@@ -54,9 +54,11 @@ define(['app/page', 'knockout', 'urls'], function (Page, ko, urls) {
 						if (offset.top > screenTop && offset.bottom < screenBottom) {
 							page.load(function (r) {
 								if (page.next_page_url) {
-									var pageItem = new Page(self, self.pages().length + 1, page.next_page_url);
-									pageItem.previous_page = page;
-									self.pages.push(pageItem);
+									if (page.model.id() == self.id()) {
+										var pageItem = new Page(self, self.pages().length + 1, page.next_page_url);
+										pageItem.previous_page = page;
+										self.pages.push(pageItem);
+									}
 								}
 							});
 							self.pager.slider("option", "max", self.pages().length - 1);
@@ -66,25 +68,25 @@ define(['app/page', 'knockout', 'urls'], function (Page, ko, urls) {
 			});
 		};
 
+		self.last_selected_value = "";
 		self.select = function (url) {
+			self.last_selected_value = url;
+
 			self.pages.removeAll();
 			var page = new Page(self, 1, url);
 			self.pages.push(page);
 			page.load(function (r) {
+				if (self.last_selected_value != url) {
+					return;
+				}
+
+				$(window).unbind("scroll");
+
 				self.name(r.name);
 				self.source(r.source);
 				self.id(r.data.id);
 
 				var previousPage = page;
-
-				//var page = new Page(self, 1, url, r.data.next_page);
-				//page.setImages(r.data.images, function () {
-				//	setTimeout(function () {
-				//		$(window).trigger('scroll');
-				//	}, 1000)
-				//});
-				//self.pages.push(page);
-				//previousPage = page;
 
 				if (r.data.pages.length) {
 					r.data.pages.forEach(function (item, index) {
@@ -108,43 +110,6 @@ define(['app/page', 'knockout', 'urls'], function (Page, ko, urls) {
 				self.pager.slider("option", "value", self.pages().length - 1);
 
 			});
-			//$.get(urls.images, {
-			//	url: url
-			//}).done(function (r) {
-			//	self.name(r.name);
-			//	self.source(r.source);
-			//
-			//
-			//	var previousPage = null;
-			//
-			//	var page = new Page(self, 1, url, r.data.next_page);
-			//	page.setImages(r.data.images, function () {
-			//		setTimeout(function () {
-			//			$(window).trigger('scroll');
-			//		}, 1000)
-			//	});
-			//	self.pages.push(page);
-			//	previousPage = page;
-			//
-			//	if (r.data.pages.length) {
-			//		r.data.pages.forEach(function (item, index) {
-			//			if (index == 0) {
-			//				return;
-			//			}
-			//			var page = new Page(self, index + 1, item);
-			//			if (previousPage) {
-			//				previousPage.next_page = page;
-			//				page.previous_page = previousPage;
-			//			}
-			//			self.pages.push(page);
-			//			previousPage = page;
-			//		});
-			//	} else {
-			//		page = new Page(self, 2, r.data.next_page);
-			//		page.previous_page = previousPage;
-			//		self.pages.push(page);
-			//		previousPage = page;
-			//	}
 			if ($('#theplace_search_query').select2('val')) {
 				$.cookie("lastCategory", $('#theplace_search_query').select2('val'), {expires: 7, path: '/'});
 			}
