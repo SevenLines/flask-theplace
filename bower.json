@@ -25,6 +25,8 @@
     "scrollNav": "~2.6.0",
     "color-thief": "*",
     "mustache.js": "~2.0.0",
-    "jquery-ui": "~1.11.4"
+    "jquery-ui": "~1.11.4",
+    "knockout": "~3.3.0",
+    "requirejs": "~2.1.17"
   }
 }

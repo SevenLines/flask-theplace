@@ -174,3 +174,11 @@
   height: 100%;
   margin-left: 25px;
   margin-bottom: 70px; }
+
+#page-info {
+  position: absolute;
+  z-index: 1000;
+  background-color: #ffffff;
+  padding: 0.25em;
+  border: 1px solid silver;
+  border-radius: 8px; }

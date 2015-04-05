@@ -9,15 +9,17 @@ js = Bundle('vendor/jquery/dist/jquery.min.js',
             'vendor/jquery-ui/jquery-ui.js',
             # 'vendor/bootstrap/dist/js/bootstrap.js',
             'vendor/select2/dist/js/select2.js',
-            'vendor/lodash/lodash.min.js',
+            # 'vendor/lodash/lodash.min.js',
             'vendor/jquery.cookie/jquery.cookie.js',
-            'vendor/mustache.js/mustache.js',
+            # 'vendor/mustache.js/mustache.js',
+            'vendor/knockout/dist/knockout.js',
             # 'vendor/color-thief/dist/color-thief.min.js',
 
-            'js/main.js',
+            # 'js/main.js',
+
             # 'vendor/fullpage.js/jquery.fullPage.min.js',
             # 'vendor/scrollNav/dist/jquery.scrollNav.min.js',
-            'js/socket.io.js',
+            # 'js/socket.io.js',
             # 'js/jquery.form.min.js',
             filters='yui_js', output='dist/script.js')
 
