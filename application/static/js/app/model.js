@@ -102,10 +102,12 @@ define(['app/page', 'knockout', 'urls'], function (Page, ko, urls) {
 						previousPage = page;
 					});
 				} else {
-					page = new Page(self, 2, r.data.next_page);
-					page.previous_page = previousPage;
-					self.pages.push(page);
-					previousPage = page;
+                    if (r.data.next_page) {
+                        page = new Page(self, 2, r.data.next_page);
+                        page.previous_page = previousPage;
+                        self.pages.push(page);
+                        previousPage = page;
+                    }
 				}
 				self.pager.slider("option", "value", self.pages().length - 1);
 
