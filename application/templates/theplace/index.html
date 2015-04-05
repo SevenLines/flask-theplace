@@ -14,12 +14,39 @@
             <div id="pages">
                 <div style="clear: both; height: 100%; padding-bottom: 15px; padding-top: 70px">
                     <div id="pager"></div>
+                    <div id="page-info" style=""></div>
                 </div>
             </div>
-            <div id="images"></div>
-            <div id="load-progress">
-                <i class="fa fa-spinner fa-pulse fa-5x"></i>
+            <div id="images" data-bind="foreach: {data:pages, afterRender: initPage }">
+                <section class="section" data-bind="css: css">
+                    <div class="page">
+                        <h2>
+                            <span data-bind="text: index"></span> /
+                            <span data-bind="text: $root.pages().length"></span>
+                        </h2>
+                    </div>
+                    <hr/>
+                    <div class="clearfix"></div>
+                    <div data-bind="foreach: { data: images, afterRender: setupImage }">
+                        <a class="image" data-bind="attr: {href: src},  css: css, click: preview">
+                            <div class="saveme" data-bind="click: download">
+                                <i class="fa fa-save"></i>
+                                <i class="fa fa-spinner fa-pulse"></i>
+                            </div>
+                            <div class="removeme" data-bind="click: remove">
+                                <i class="fa fa-remove"></i>
+                                <i class="fa fa-spinner fa-pulse"></i>
+                            </div>
+                            <img class="lazy" data-bind="attr: {'data-original': thumbnail}">
+                        </a>
+                    </div>
+                    <div id="load-progress">
+                        <i class="fa fa-spinner fa-pulse fa-5x"></i>
+                    </div>
+                </section>
             </div>
+
+
             <div class="clearfix"></div>
         </div>
         <div class="right-column">
@@ -28,41 +55,24 @@
         </div>
     </div>
 
-    {% raw %}
-    <div id="template-image-item" class="template">
-        <a class="image {{ exists }}" href="{{ src }}">
-            <div class="saveme">
-                <i class="fa fa-save"></i>
-                <i class="fa fa-spinner fa-pulse"></i>
-            </div>
-            <div class="removeme">
-                <i class="fa fa-remove"></i>
-                <i class="fa fa-spinner fa-pulse"></i>
-            </div>
-            <img data-original="{{ thumbnail }}">
-        </a>
-    </div>
-    <div class="template" id="template-section-item">
-        <section class="section section{{ page }}">
-            <div class="page">
-                <h2>{{ page }} / {{ pages_count }}</h2>
-            </div>
-            <hr/>
-            <div class="clearfix"></div>
-        </section>
-    </div>
-    {% endraw %}
-
+    <!-- SCRIPTS -->
+    <script src="{{ url_for("static", filename="vendor/requirejs/require.js") }}"></script>
     <script>
-        new PhotosModel({
-            urls: {
-                images          : "{{ url_for("images") }}",
+        define("urls", function () {
+            return {
+                images: "{{ url_for("images") }}",
                 query_categories: "{{ url_for("query_categories") }}",
-                download        : "{{ url_for("download") }}",
-                remove          : "{{ url_for("remove") }}",
-                image_url       : "{{ url_for("image_src") }}"
+                download: "{{ url_for("download") }}",
+                remove: "{{ url_for("remove") }}",
+                image_url: "{{ url_for("image_src") }}"
             }
         })
     </script>
-
+    <script>
+        require.config({
+            baseUrl: '/static/js'
+        });
+        require(['main']);
+    </script>
+    <!-- end SCRIPTS -->
 {%- endblock %}
