@@ -63,10 +63,10 @@ define(['urls', 'knockout', 'app/image'], function (urls, ko, Image) {
 		};
 
 		self.setupImage = function (element, index, data) {
-			$(element).find('.lazy').lazyload({
-				threshold: 600,
+			//$(element).find('.lazy').lazyload({
+				//threshold: 600,
 				//effect   : "fadeIn"
-			});
+			//});
 		};
 
 	}

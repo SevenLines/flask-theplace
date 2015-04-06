@@ -5,7 +5,7 @@ assets = Environment(app)
 assets.auto_build = app.config['ASSETS_DEBUG']
 
 js = Bundle('vendor/jquery/dist/jquery.min.js',
-            'vendor/jquery.lazyload/jquery.lazyload.js',
+            # 'vendor/jquery.lazyload/jquery.lazyload.js',
             'vendor/jquery-ui/jquery-ui.js',
             # 'vendor/bootstrap/dist/js/bootstrap.js',
             'vendor/select2/dist/js/select2.js',

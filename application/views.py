@@ -96,7 +96,9 @@ def download():
         # print "%s: %s" % (what if what else '!none', url)
         # if not what:
         if not re.search('image/.*', r.headers['content-type']):
-            flask.abort(406)
+            what = imghdr.what(None, r.content)
+            if not what:
+                flask.abort(406)
 
         if not os.path.exists(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename))
