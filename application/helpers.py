@@ -11,7 +11,7 @@ from application.app_settings import app
 from application.sources.hqcelebrity import HqCelebritySource
 from application.sources.theplace import ThePlaceSource
 from application.sources.carreck import CarreckSource
-from hqdiesel import HqDiesel
+from application.sources.hqdiesel import HqDiesel
 
 
 sources = {

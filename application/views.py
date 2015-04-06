@@ -32,6 +32,9 @@ def update():
 
             def get():
                 for source_name in _sources:
+                    # Source.query.filter(Source.name == source_name).delete()
+                    sq = db.session.query(Source.id).filter(Source.name == source_name).subquery()
+                    Album.query.filter(Album.source_id.in_(sq)).delete(synchronize_session='fetch')
                     Source.query.filter(Source.name == source_name).delete()
                     db.session.commit()
                     for category in get_categories(source_name):
@@ -151,7 +154,7 @@ def query_categories():
     categories = Category.query.filter(Category.name.like(u"%{query}%".format(query=query)))
 
     # if we have sources without albums we will try to load albums
-    for category in categories.with_lockmode('read'):
+    for category in categories.with_lockmode('read')[:5]:
         for source in category.sources:
             if source.albums.count() == 0:
                 for album in get_albums(source.name, source.local_url):
