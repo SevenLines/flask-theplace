@@ -17,6 +17,7 @@ class Setting(db.Model):
 
 class Album(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80))
 
     album_id = db.Column(db.Integer)
     local_url = db.Column(db.String(80))

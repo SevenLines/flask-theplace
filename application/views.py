@@ -48,6 +48,7 @@ def update():
                         for album in category['albums']:
                             album = Album(
                                 album_id=album['album_id'],
+                                name=album['name'],
                                 local_url=album['local_url'],
                                 source_id=src.id,
                             )
@@ -105,9 +106,6 @@ def download():
 
         r = open_url_ex(src)
 
-        # what = imghdr.what(None, r.content)
-        # print "%s: %s" % (what if what else '!none', url)
-        # if not what:
         if not re.search('image/.*', r.headers['content-type']):
             what = imghdr.what(None, r.content)
             if not what:
