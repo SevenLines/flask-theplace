@@ -7,7 +7,7 @@ class Source(object):
     photos = ""
     decode = "utf8"
 
-    album_item_xpath = ""
+    category_item_xpath = ""
     image_item_xpath = ""
     paginator_item_xpath = ""
 
@@ -15,7 +15,7 @@ class Source(object):
     def paths(self):
         return []
 
-    def album_info(self, node):
+    def category_info(self, node):
         """
         :param node: which contains info about album
         :return: triple: (name, absolute_url, local_id)
@@ -31,3 +31,6 @@ class Source(object):
         :return: tripple (pages_urls, album_id, next_page)
         """
         pass
+
+    def get_albums(self, url):
+        return []
