@@ -1,6 +1,7 @@
 import os
 from flask.ext.migrate import Migrate
 from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship
 from application.app_settings import app, ROOT_DIR
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///%s' % os.path.join(ROOT_DIR, 'db/database.db')
@@ -13,27 +14,68 @@ class Setting(db.Model):
     key = db.Column(db.String(20), index=True)
     value = db.Column(db.String(256))
 
+
+class Album(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    album_id = db.Column(db.Integer)
+    local_url = db.Column(db.String(80))
+
+    source_id = db.Column(db.Integer, db.ForeignKey('source.id'))
+
+    def __repr__(self):
+        return "<Album: %s>" % (self.local_url)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'album_id': self.album_id,
+            'local_url': self.local_url
+        }
+
+
 class Source(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
-    url = db.Column(db.String(80))
+    local_id = db.Column(db.Integer)  # id of category in current source
+    local_url = db.Column(db.String(80))
+
+    albums = relationship("Album", backref='source', lazy='dynamic')
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+
+    def __repr__(self):
+        return "<Source: %s (%s)>" % (self.name, self.local_url)
+
+    def serialize(self):
+        out = {
+            'name': self.name,
+            'local_id': self.name,
+            'local_url': self.name,
+            'albums': [],
+        }
+        for album in self.albums.all():
+            out['albums'].append(album.serialize())
+        return out
 
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
-    source_name = db.Column(db.String(80))
-    local_id = db.Column(db.Integer)
-    local_url = db.Column(db.String(80))
+
+    sources = relationship("Source", backref='category', lazy='dynamic')
+    # source_name = db.Column(db.String(80))
+    # local_id = db.Column(db.Integer)
+    # local_url = db.Column(db.String(80))
 
     def serialize(self):
-        return {
+        out = {
             'id': self.id,
             'name': self.name,
-            'source_name': self.source_name,
-            'local_url': self.local_url,
-            'local_id': self.local_id
+            'sources': []
         }
+        for source in self.sources.all():
+            out['sources'].append(source.serialize())
+        return out
 
     def __repr__(self):
-        return '<Category: %r-%r %r>' % (self.local_id, self.name, self.local_url)
+        return '<Category: %r: %r>' % (self.id, self.name)

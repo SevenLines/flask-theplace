@@ -19,14 +19,14 @@
 
 <nav id="navigation" class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
-        <a class="navbar-brand active" href="/">ThePlace</a>
-        <ul class="nav navbar-nav">
+        <a class="navbar-brand active" href="/" data-bind="text: selectedName">ThePlace</a>
+        {%- block menu %}
+        {%- endblock %}
+        <ul class="nav navbar-nav pull-right">
             <li>
                 <a href="{{ url_for("update") }}">Update</a>
             </li>
         </ul>
-        {%- block menu %}
-        {%- endblock %}
     </div>
 </nav>
 {%- block body %}

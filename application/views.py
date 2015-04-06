@@ -13,8 +13,9 @@ from sqlalchemy import or_, and_
 from werkzeug.wrappers import Response
 
 from application.app_settings import app
-from application.helpers import get_albums, get_images, get_image_path, is_local, sources, SourceExtractor
-from application.models import db, Category
+from application.helpers import get_categories, get_images, get_image_path, is_local, sources, SourceExtractor, \
+    get_or_create
+from application.models import db, Category, Source, Album
 from helpers import open_url_ex
 
 
@@ -23,7 +24,6 @@ def update():
     if is_local():
         if request.headers.get('accept') == 'text/event-stream':
 
-            # select source
             source = request.args.get("source")
             if source is None:
                 _sources = sources
@@ -32,14 +32,28 @@ def update():
 
             def get():
                 for source_name in _sources:
-                    Category.query.filter(Category.source_name == source_name).delete()
-                    for category in get_albums(source_name):
-                        db.session.add(Category(name=category['name'],
-                                                source_name=source_name,
-                                                local_url=category['href'],
-                                                local_id=category['local_id']))
+                    Source.query.filter(Source.name == source_name).delete()
+                    db.session.commit()
+                    for category in get_categories(source_name):
+                        dbCategory = get_or_create(db.session, Category, name=category['name'])
+                        db.session.flush()
+                        src = Source(
+                            name=source_name,
+                            local_id=category['local_id'],
+                            local_url=category['local_url'],
+                            category_id=dbCategory.id
+                        )
+                        db.session.add(src)
+                        db.session.flush()
+                        for album in category['albums']:
+                            album = Album(
+                                album_id=album['album_id'],
+                                local_url=album['local_url'],
+                                source_id=src.id,
+                            )
+                            db.session.add(album)
+                            db.session.flush()
                         status = "%s (%s)" % (category['name'], source_name)
-                        # print status
                         yield "data: %s\n\n" % status
                     db.session.commit()
                 yield "data: $done\n\n"
@@ -67,12 +81,11 @@ def images():
     if not source_name:
         flask.abort(404)
 
-    category = Category.query.filter(
-        and_(Category.source_name == source_name,
-             or_(Category.local_id == id_, Category.local_url == url)
-             )
-    ).first()
-    name = category.name if category else ''
+    album = Album.query.join(Source)\
+        .filter(and_(Source.name == source_name, or_(Album.album_id==id_, Album.local_url == url)))\
+        .first()
+
+    name = album.source.category.name if album else ''
     _images = get_images(source_name, url, name)
     if request.is_xhr:
         return jsonify(data=_images, name=name, is_local=is_local(), source=source_name)
@@ -139,6 +152,7 @@ def query_categories():
     query = request.args.get('query')
     categories = Category.query.filter(Category.name.like(u"%{query}%".format(query=query)))
     return jsonify(items=list([c.serialize() for c in categories]))
+
 
 @app.route('/')
 def index():

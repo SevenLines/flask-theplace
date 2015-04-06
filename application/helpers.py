@@ -5,6 +5,7 @@ from urlparse import urljoin
 import requests
 
 from lxml import html
+from sqlalchemy.sql import ClauseElement
 
 from application.app_settings import app
 from application.sources.hqcelebrity import HqCelebritySource
@@ -17,6 +18,18 @@ sources = {
     CarreckSource.name: CarreckSource(),
     HqCelebritySource.name: HqCelebritySource(),
 }
+
+
+def get_or_create(session, model, **kwargs):
+    instance = session.query(model).filter_by(**kwargs).first()
+    if instance:
+        return instance
+    else:
+        instance = model(**kwargs)
+        session.add(instance)
+        # session.commit()
+        return instance
+
 
 
 def open_url_ex(url, referrer='http://www.carreck.com/pictures/'):
@@ -37,20 +50,15 @@ def get_image_path(filename, category_name, source):
     return os.path.join(app.config['SAVE_PATH'], category_name, source, filename)
 
 
-def get_albums(source):
+def get_categories(source):
     source = sources[source]
     for path in source.paths:
         response = open_url_ex(path, source.photos)
         response = response.text
         root = html.fromstring(response)
 
-        for node in root.xpath(source.album_item_xpath):
-            name, href, local_id = source.album_info(node)
-            yield {
-                'name': name,
-                'href': href,
-                'local_id': local_id,
-            }
+        for node in root.xpath(source.category_item_xpath):
+            yield source.category_info(node)
 
 
 def get_images(source_name, url, name):
@@ -160,9 +168,9 @@ class SourceExtractor(object):
             return m.group(2)
         else:
             ""
-        #     return get_image_path(m.group(2), category_name, source)
-        # else:
-        #     return None
+            # return get_image_path(m.group(2), category_name, source)
+            # else:
+            # return None
 
     @classmethod
     def __get_imagevenue(cls, url, category_name):
@@ -195,7 +203,6 @@ class SourceExtractor(object):
         return img.get('src')
 
 
-
     @classmethod
     def __get_imgbox_name(cls, url):
         m = re.search(cls.TYPES['imgbox']['pattern'], url)
@@ -203,6 +210,7 @@ class SourceExtractor(object):
             return m.group(1)
         else:
             return None
+
     # endregion
 
 

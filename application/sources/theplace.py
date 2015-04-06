@@ -12,7 +12,7 @@ class ThePlaceSource(Source):
     photos = "http://www.theplace.ru/photos/"
     decode = "windows-1251"
 
-    album_item_xpath = '//table[@id="models_list"]//a'
+    category_item_xpath = '//table[@id="models_list"]//a'
     image_item_xpath = CSSSelector('.gallery-pics-list a img').path
     paginator_item_xpath = CSSSelector('.listalka.ltop a').path
 
@@ -26,12 +26,20 @@ class ThePlaceSource(Source):
                 "%sphotos/?s_id=3" % self.root,
                 ]
 
-    def album_info(self, node):
-        return (
-            node.text,
-            urljoin(self.photos, node.get("href")),
-            re.search(r"mid(\d+)\.html", node.get("href")).group(1),
-        )
+    def category_info(self, node):
+        href = urljoin(self.photos, node.get("href"))
+        id_ = re.search(r"mid(\d+)\.html", node.get("href")).group(1)
+        return {
+            'name': node.text,
+            'local_url': href,
+            'local_id': id_,
+            'albums': [
+                {
+                    'album_id': id_,
+                    'local_url': href
+                },
+            ]
+        }
 
     def image_info(self, node):
         src = self.regexp.sub(r'\1\2', node.get('src'))

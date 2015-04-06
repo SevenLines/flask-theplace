@@ -18,7 +18,7 @@ class HqCelebritySource(Source):
         31, 32, 33  # multiple celebs
     ]
 
-    album_item_xpath = CSSSelector(".alblink a").path
+    category_item_xpath = CSSSelector(".alblink a").path
     image_item_xpath = CSSSelector(".thumbnails .image").path
     paginator_item_xpath = CSSSelector(".navmenu a").path
 
@@ -42,12 +42,20 @@ class HqCelebritySource(Source):
                     out.append(url)
                     yield urljoin(self.root, url)
 
-    def album_info(self, node):
-        return (
-            node.text,
-            urljoin(self.root, node.get("href")),
-            re.search(r"\?album=(\d+)", node.get("href")).group(1),
-        )
+    def category_info(self, node):
+        href = urljoin(self.root, node.get("href"))
+        id_ = re.search(r"\?album=(\d+)", node.get("href")).group(1)
+        return {
+            'name': node.text,
+            'local_url': href,
+            'local_id': id_,
+            'albums': [
+                {
+                    'album_id': id_,
+                    'local_url': href
+                },
+            ]
+        }
 
     def image_info(self, node):
         src = self.regexp.sub(r'\1/\2', node.get('src'))
@@ -69,7 +77,7 @@ class HqCelebritySource(Source):
                     max_num = page_num
 
         return list([urljoin(self.root, "thumbnails.php?album=%d&page=%d" % (id, i))
-                     for i in xrange(1, max_num+1)]), id, ""
+                     for i in xrange(1, max_num + 1)]), id, ""
 
 
 

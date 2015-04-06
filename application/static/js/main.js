@@ -31,28 +31,43 @@ require(['app/model', 'urls', 'knockout'],
 					};
 				},
 				processResults: function (data, page) {
-					var sources = [];
 					var out = [];
-					data.items.forEach(function (item) {
-						if (sources.indexOf(item.source_name) == -1) {
-							sources.push(item.source_name);
-						}
-					});
-
-					for (var i = 0; i < sources.length; ++i) {
-						var item = {};
-						item.text = sources[i];
-						item.children = data.items.map(function (el) {
-							if (el.source_name == item.text) {
-								return {
-									'id': el.local_url,
-									'text': el.name
+					data.items.forEach(function (category) {
+						var item_category = {};
+						item_category.text = category.name;
+						if (category.sources.length > 1) {
+							item_category.children = category.sources.map(function (source) {
+								var item_source = {};
+								item_source.text = source.name;
+								if (source.albums.length > 1) {
+									item_source.children = source.albums.map(function (album) {
+										var item_album = {};
+										item_album.text = album.album_id;
+										item_album.id = album.local_url;
+										return item_album;
+									});
+									return item_source;
+								} else if (source.albums.length == 1) {
+									item_source.id = source.albums[0].local_url;
+									return item_source;
 								}
+								return "";
+							});
+						} else if (category.sources.length == 1) {
+							source = category.sources[0];
+							if (source.albums.length > 1) {
+								item_category.children = source.albums.map(function (album) {
+									var item_album = {};
+									item_album.text = album.album_id;
+									item_album.id = album.local_url;
+									return item_album;
+								});
+							} else if (source.albums.length == 1) {
+								item_category.id = source.albums[0].local_url;
 							}
-							return "";
-						});
-						out.push(item)
-					}
+						}
+						out.push(item_category);
+					});
 					return {
 						results: out
 					};

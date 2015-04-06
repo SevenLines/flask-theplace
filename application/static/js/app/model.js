@@ -13,6 +13,10 @@ define(['app/page', 'knockout', 'urls'], function (Page, ko, urls) {
 
 		var blockLoading = false;
 
+		self.selectedName = ko.pureComputed(function () {
+			return self.name() ? self.name() : "ThePlace";
+		});
+
 		function init() {
 			var pageInfo = $("#page-info");
 			self.pager = $("#pager").slider({
