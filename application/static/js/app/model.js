@@ -11,6 +11,8 @@ define(['app/page', 'knockout', 'urls'], function (Page, ko, urls) {
 
 		self.pages = ko.observableArray([]);
 
+		var blockLoading = false;
+
 		function init() {
 			var pageInfo = $("#page-info");
 			self.pager = $("#pager").slider({
@@ -21,9 +23,13 @@ define(['app/page', 'knockout', 'urls'], function (Page, ko, urls) {
 					self.pages()[page - 1].load(function () {
 						var section = $(".section" + page);
 						if (section.size()) {
+							blockLoading = true;
 							$('html, body').animate({
 								scrollTop: section.offset().top - 60
-							}, 200);
+							}, 200, function () {
+								console.log(blockLoading);
+								blockLoading = false;
+							});
 						}
 					});
 				},
@@ -44,7 +50,7 @@ define(['app/page', 'knockout', 'urls'], function (Page, ko, urls) {
 
 		self.initPage = function (element, page) {
 			$(window).scroll(function () {
-				if (!page.loaded()) {
+				if (!blockLoading && !page.loaded()) {
 					var $el = $(element[1]);
 					var screenTop = $(window).scrollTop() - 600;
 					var screenBottom = $(window).scrollTop() + $(window).height() + 600;

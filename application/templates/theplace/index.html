@@ -23,9 +23,14 @@
                         <h2>
                             <span data-bind="text: index"></span> /
                             <span data-bind="text: $root.pages().length"></span>
-                            <a target="_blank" class="pull-right" data-bind="attr: {href: url}">
-                                <i class="fa fa-external-link"></i>
-                            </a>
+                            <div class="btn-group btn-group-sm pull-right">
+                                <a class="btn btn-link" data-bind="attr: {href: url}" target="_blank">
+                                     <i class="fa fa-external-link"></i>
+                                </a>
+                                 <div class="btn btn-link" data-bind="click: downloadAll">
+                                     <i class="fa fa-download"></i>
+                                </div>
+                            </div>
                         </h2>
                     </div>
                     <hr/>

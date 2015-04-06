@@ -213,7 +213,7 @@ class SourceExtractor(object):
             'filename': lambda url: SourceExtractor.__get_imagebam_name(url)
         },
         'imagevenue': {
-            'pattern': r'^http://img(\d+)\.imagevenue.com/img.php\?image=(.*)',
+            'pattern': r'^http://img(\d+)\.imagevenue.com/img.php\?.*?image=(.*)',
             'src': lambda url, category_name: SourceExtractor.__get_imagevenue(url, category_name),
             'filename': lambda url: SourceExtractor.__get_imagevenue_name(url)
         },

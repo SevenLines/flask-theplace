@@ -51,6 +51,12 @@ define(['urls', 'knockout', 'app/image'], function (urls, ko, Image) {
 			}
 		};
 
+		self.downloadAll = function () {
+			self.images().forEach(function (item) {
+				item.download();
+			})
+		}
+
 		self.setImages = function (images, ondone) {
 			images.forEach(function (img) {
 				self.images.push(new Image(img, self));
