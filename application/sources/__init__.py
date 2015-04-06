@@ -31,3 +31,6 @@ class Source(object):
         :return: tripple (pages_urls, album_id, next_page)
         """
         pass
+
+    def get_albums(self, url):
+        return []

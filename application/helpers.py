@@ -11,12 +11,14 @@ from application.app_settings import app
 from application.sources.hqcelebrity import HqCelebritySource
 from application.sources.theplace import ThePlaceSource
 from application.sources.carreck import CarreckSource
+from hqdiesel import HqDiesel
 
 
 sources = {
     ThePlaceSource.name: ThePlaceSource(),
     CarreckSource.name: CarreckSource(),
     HqCelebritySource.name: HqCelebritySource(),
+    HqDiesel.name: HqDiesel()
 }
 
 
@@ -102,6 +104,10 @@ def get_images(source_name, url, name):
         'pages': pages,
         'next_page': next_page,
     }
+
+
+def get_albums(source_name, url):
+    return sources[source_name].get_albums(url)
 
 
 class SourceExtractor(object):

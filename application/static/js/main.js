@@ -42,7 +42,7 @@ require(['app/model', 'urls', 'knockout'],
 								if (source.albums.length > 1) {
 									item_source.children = source.albums.map(function (album) {
 										var item_album = {};
-										item_album.text = album.album_id;
+										item_album.text = album.name ? album.name : album.album_id;
 										item_album.id = album.local_url;
 										return item_album;
 									});
@@ -58,12 +58,13 @@ require(['app/model', 'urls', 'knockout'],
 							if (source.albums.length > 1) {
 								item_category.children = source.albums.map(function (album) {
 									var item_album = {};
-									item_album.text = album.album_id;
+									item_album.text = album.name ? album.name : album.album_id;
 									item_album.id = album.local_url;
 									return item_album;
 								});
 							} else if (source.albums.length == 1) {
 								item_category.id = source.albums[0].local_url;
+								item_category.text = [item_category.text, " (", source.name, ")"].join('')
 							}
 						}
 						out.push(item_category);

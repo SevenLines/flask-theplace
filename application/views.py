@@ -14,7 +14,7 @@ from werkzeug.wrappers import Response
 
 from application.app_settings import app
 from application.helpers import get_categories, get_images, get_image_path, is_local, sources, SourceExtractor, \
-    get_or_create
+    get_or_create, get_albums
 from application.models import db, Category, Source, Album
 from helpers import open_url_ex
 
@@ -48,7 +48,7 @@ def update():
                         for album in category['albums']:
                             album = Album(
                                 album_id=album['album_id'],
-                                name=album['name'],
+                                name=album.get('name', ''),
                                 local_url=album['local_url'],
                                 source_id=src.id,
                             )
@@ -149,7 +149,23 @@ def image_src():
 def query_categories():
     query = request.args.get('query')
     categories = Category.query.filter(Category.name.like(u"%{query}%".format(query=query)))
-    return jsonify(items=list([c.serialize() for c in categories]))
+
+    # if we have sources without albums we will try to load albums
+    for category in categories.with_lockmode('read'):
+        for source in category.sources:
+            if source.albums.count() == 0:
+                for album in get_albums(source.name, source.local_url):
+                    album = Album(
+                        album_id=album['album_id'],
+                        name=album.get('name', ''),
+                        local_url=album['local_url'],
+                        source_id=source.id,
+                    )
+                    db.session.add(album)
+    db.session.commit()
+
+    items = list([c.serialize() for c in categories])
+    return jsonify(items=items)
 
 
 @app.route('/')

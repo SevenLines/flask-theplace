@@ -30,6 +30,7 @@ class Album(db.Model):
     def serialize(self):
         return {
             'id': self.id,
+            'name': self.name,
             'album_id': self.album_id,
             'local_url': self.local_url
         }
