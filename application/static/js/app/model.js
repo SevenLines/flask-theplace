@@ -17,6 +17,10 @@ define(['app/page', 'knockout', 'urls'], function (Page, ko, urls) {
 			return self.name() ? self.name() : "ThePlace";
 		});
 
+        self.title = ko.pureComputed(function () {
+            return [self.name(), " | " ,self.source()].join("")
+        });
+
 		function init() {
 			var pageInfo = $("#page-info");
 			self.pager = $("#pager").slider({
@@ -95,6 +99,7 @@ define(['app/page', 'knockout', 'urls'], function (Page, ko, urls) {
 				self.name(r.name);
 				self.source(r.source);
 				self.id(r.data.id);
+                document.title = self.title();
 
 				var previousPage = page;
 

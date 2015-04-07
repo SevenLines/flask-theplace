@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title></title>
+    <title>{% block title %}ThePlace{% endblock %}</title>
     {%- assets "js_all" %}
         <script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {%- endassets %}

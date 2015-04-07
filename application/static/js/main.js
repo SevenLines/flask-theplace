@@ -14,7 +14,7 @@ define('jquery', [], function () {
 require(['app/model', 'urls', 'knockout'],
 	function (PhotoModel, urls, ko) {
 		var photoModel = new PhotoModel();
-		ko.applyBindings(photoModel);
+		ko.applyBindings(photoModel, $("html")[0]);
 
 		$('#theplace_search_query').select2({
 			placeholder: "Enter name",
