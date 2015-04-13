@@ -48,7 +48,7 @@ def open_url_ex(url, referrer='http://www.carreck.com/pictures/'):
         'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:36.0) Gecko/20100101 Firefox/36.0',
         'Referer': referrer
     }
-    r = requests.get(url, headers=headers)
+    r = requests.get(url, headers=headers, allow_redirects=True)
     return r
 
 
@@ -287,7 +287,7 @@ class SourceExtractor(object):
             'filename': lambda url: SourceExtractor.__get_hotflick_name(url),
         },
         'upix': {
-            'pattern': r'(http://upix.me/files/\w+/)#(.*)',
+            'pattern': r'(http://upix.me/files\w?/\w+/)#(.*)',
             'src': lambda url, category_name: SourceExtractor.__get_upix(url, category_name),
             'filename': lambda url: SourceExtractor.__get_upix_name(url),
         }

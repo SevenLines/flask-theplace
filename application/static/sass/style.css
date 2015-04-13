@@ -175,8 +175,6 @@
     position: absolute; }
   .right-column.loading .hover-area {
     display: none; }
-  .right-column.loading img {
-    display: none; }
   .right-column.loading .load-icon {
     display: block; }
 

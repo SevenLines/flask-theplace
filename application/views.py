@@ -92,7 +92,10 @@ def images():
         name = album.source.category.name
     else:
         album_info = get_custom_album(url)
-        name = album_info['name']
+        if album_info and 'name' in album_info:
+            name = album_info['name']
+        else:
+            name = ''
 
     _images = get_images(source_name, url, name)
     # if request.is_xhr:
@@ -108,15 +111,20 @@ def download():
 
         src, filename = SourceExtractor.get_src(url, name, source)
         ext = src.split('.')[-1]
-        if not filename.endswith(ext):
-            filename = "%s.%s" % (filename, ext)
+        if len(ext) > 4:
+            ext = "jpg"
+
 
         r = open_url_ex(src)
 
-        if not re.search('image/.*', r.headers['content-type']):
-            what = imghdr.what(None, r.content)
-            if not what:
-                flask.abort(406)
+        if not filename.endswith(ext):
+            filename = "%s.%s" % (filename, ext)
+
+
+        # if not re.search('image/.*', r.headers['content-type']):
+        #     what = imghdr.what(None, r.content)
+        #     if not what:
+        #         flask.abort(406)
 
         if not os.path.exists(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename))
