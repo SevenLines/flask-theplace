@@ -228,15 +228,38 @@ class SourceExtractor(object):
 
     # endregion
 
+    # region hotflick
+    @classmethod
+    def __get_hotflick(cls, url, category_name):
+        r = requests.get(url)
+        root = html.fromstring(r.text)
+
+        img = root.cssselect("#img")
+        if len(img):
+            img = img[-1]
+        else:
+            return ""
+        return "http://www.hotflick.net" + img.get('src')
+
+    @classmethod
+    def __get_hotflick_name(cls, url):
+        m = re.search(cls.TYPES['hotflick']['pattern'], url)
+        if m:
+            return m.group(2)
+        else:
+            return None
+
+    # endregion
+
 
     TYPES = {
         'imagebam': {
-            'pattern': r'^http://www.imagebam.com/',
+            'pattern': r'^http://www\.imagebam\.com/',
             'src': lambda url, category_name: SourceExtractor.__get_imagebam(url, category_name),
             'filename': lambda url: SourceExtractor.__get_imagebam_name(url)
         },
         'imagevenue': {
-            'pattern': r'^http://img(\d+)\.imagevenue.com/img.php\?.*?image=(.*)',
+            'pattern': r'^http://img(\d+)\.imagevenue\.com/img\.php\?.*?image=(.*)',
             'src': lambda url, category_name: SourceExtractor.__get_imagevenue(url, category_name),
             'filename': lambda url: SourceExtractor.__get_imagevenue_name(url)
         },
@@ -244,5 +267,10 @@ class SourceExtractor(object):
             'pattern': r'^http://imgbox.com/(\w+)',
             'src': lambda url, category_name: SourceExtractor.__get_imgbox(url, category_name),
             'filename': lambda url: SourceExtractor.__get_imgbox_name(url)
+        },
+        'hotflick': {
+            'pattern': r'^http://www.hotflick.net/f/v/\?q=(\d+)\.(.*)',
+            'src': lambda url, category_name: SourceExtractor.__get_hotflick(url, category_name),
+            'filename': lambda url: SourceExtractor.__get_hotflick_name(url),
         }
     }

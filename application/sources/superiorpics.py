@@ -22,8 +22,6 @@ class SuperiorPicsSource(Source):
         return []
 
     def category_info(self, node):
-        # href = urljoin(self.photos, node.get("href"))
-        # id_ = re.search(r"mid(\d+)\.html", node.get("href")).group(1)
         return {
             'name': '',
             'local_url': '',
