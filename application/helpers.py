@@ -234,12 +234,13 @@ class SourceExtractor(object):
         r = requests.get(url)
         root = html.fromstring(r.text)
 
-        img = root.cssselect("#img")
+        img = root.cssselect("#box-content-picture-detail img")
         if len(img):
             img = img[-1]
         else:
             return ""
-        return "http://www.hotflick.net" + img.get('src')
+        return "http://www.hotflick.net" + img.get('src') if not img.get('src').startswith(
+            'http://www.hotflick.net') else img.get('src')
 
     @classmethod
     def __get_hotflick_name(cls, url):
@@ -250,6 +251,18 @@ class SourceExtractor(object):
             return None
 
     # endregion
+
+    @classmethod
+    def __get_upix(cls, url, category_name):
+        return re.sub(cls.TYPES['upix']['pattern'], r'\1\2', url)
+
+    @classmethod
+    def __get_upix_name(cls, url):
+        m = re.search(cls.TYPES['upix']['pattern'], url)
+        if m:
+            return m.group(1)
+        else:
+            return None
 
 
     TYPES = {
@@ -269,8 +282,13 @@ class SourceExtractor(object):
             'filename': lambda url: SourceExtractor.__get_imgbox_name(url)
         },
         'hotflick': {
-            'pattern': r'^http://www.hotflick.net/f/v/\?q=(\d+)\.(.*)',
+            'pattern': r'^http://www.hotflick.net/\w/\w/\?q=(\d+)\.(.*)',
             'src': lambda url, category_name: SourceExtractor.__get_hotflick(url, category_name),
             'filename': lambda url: SourceExtractor.__get_hotflick_name(url),
+        },
+        'upix': {
+            'pattern': r'(http://upix.me/files/\w+/)#(.*)',
+            'src': lambda url, category_name: SourceExtractor.__get_upix(url, category_name),
+            'filename': lambda url: SourceExtractor.__get_upix_name(url),
         }
     }
