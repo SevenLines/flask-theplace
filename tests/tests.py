@@ -87,3 +87,46 @@ class FlaskTestCase(unittest.TestCase):
     def test_get_url_should_return_none_for_bad_image(self):
         r = self.client.get(url_for('image_src'), query_string={'url': self.bad_image_bam_src})
         self.assertEqual(r.data, "")
+
+
+    def test_superior_pics_can_process_custom_urls(self):
+        url = "http://forums.superiorpics.com/ubbthreads/ubbthreads.php/topics/4640509/Alison_Brie_is_PERFECT"
+        r = self.client.get(url_for('query_categories'), query_string={'query': url})
+        data = json.loads(r.data)
+        data = data['items'][0]
+
+        self.assertIn('id', data)
+        self.assertIn('name', data)
+        self.assertIn('sources', data)
+
+        source = data['sources'][0]
+
+        self.assertIn('name', source)
+        self.assertIn('local_id', source)
+        self.assertIn('local_url', source)
+        self.assertIn('albums', source)
+
+        album = source['albums'][0]
+
+        self.assertIn('id', album)
+        self.assertIn('name', album)
+        self.assertIn('album_id', album)
+        self.assertIn('local_url', album)
+
+    def test_superior_pics_process_images(self):
+        urls = [
+            "http://forums.superiorpics.com/ubbthreads/ubbthreads.php/topics/2907126/Aisleyne_HorganWallace_@_The_2"
+            "http://forums.superiorpics.com/ubbthreads/ubbthreads.php/topics/1842804/Aisleyne_Horgan_Wallace_Variou"
+            "http://forums.superiorpics.com/ubbthreads/ubbthreads.php/topics/4640509/Alison_Brie_is_PERFECT",
+        ]
+        for url in urls:
+            r = self.client.get(url_for('images'), query_string={'url': url, 'id': -1})
+
+            data = json.loads(r.data)
+
+            self.assertIn('data', data)
+            self.assertIn('images', data['data'])
+
+            images = data['data']['images']
+
+            self.assertGreater(len(images), 0)

@@ -16,7 +16,7 @@ from application.app_settings import app
 from application.helpers import get_categories, get_images, get_image_path, is_local, sources, SourceExtractor, \
     get_or_create, get_albums
 from application.models import db, Category, Source, Album
-from helpers import open_url_ex
+from helpers import open_url_ex, get_custom_album
 
 
 @app.route('/categories/update')
@@ -78,7 +78,7 @@ def images():
 
     source_name = ""
     for sn in sources:
-        if url.startswith(sources[sn].root):
+        if re.search(sources[sn].root, url):
             source_name = sn
             break
 
@@ -88,11 +88,15 @@ def images():
     album = Album.query.join(Source)\
         .filter(and_(Source.name == source_name, or_(Album.album_id==id_, Album.local_url == url)))\
         .first()
+    if album:
+        name = album.source.category.name
+    else:
+        album_info = get_custom_album(url)
+        name = album_info['name']
 
-    name = album.source.category.name if album else ''
     _images = get_images(source_name, url, name)
-    if request.is_xhr:
-        return jsonify(data=_images, name=name, is_local=is_local(), source=source_name)
+    # if request.is_xhr:
+    return jsonify(data=_images, name=name, is_local=is_local(), source=source_name)
 
 
 @app.route('/download', methods=["POST", ])
@@ -151,6 +155,11 @@ def image_src():
 @app.route('/categories/query')
 def query_categories():
     query = request.args.get('query')
+
+    album_info = get_custom_album(query)
+    if album_info:
+        return jsonify(items=[album_info, ])
+
     categories = Category.query.filter(Category.name.like(u"%{query}%".format(query=query)))
 
     # if we have sources without albums we will try to load albums

@@ -12,13 +12,15 @@ from application.sources.hqcelebrity import HqCelebritySource
 from application.sources.theplace import ThePlaceSource
 from application.sources.carreck import CarreckSource
 from application.sources.hqdiesel import HqDiesel
+from superiorpics import SuperiorPicsSource
 
 
 sources = {
     ThePlaceSource.name: ThePlaceSource(),
     CarreckSource.name: CarreckSource(),
     HqCelebritySource.name: HqCelebritySource(),
-    HqDiesel.name: HqDiesel()
+    HqDiesel.name: HqDiesel(),
+    SuperiorPicsSource.name: SuperiorPicsSource(),
 }
 
 
@@ -32,6 +34,13 @@ def get_or_create(session, model, **kwargs):
         # session.commit()
         return instance
 
+
+def get_custom_album(url):
+    for source in sources:
+        album_info = sources[source].get_album_info(url)
+        if album_info:
+            return album_info
+    return None
 
 
 def open_url_ex(url, referrer='http://www.carreck.com/pictures/'):

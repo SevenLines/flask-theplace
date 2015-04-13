@@ -34,3 +34,10 @@ class Source(object):
 
     def get_albums(self, url):
         return []
+
+    def get_album_info(self, url):
+        """
+        :param url:
+        :return: album info for custom url
+        """
+        return None
