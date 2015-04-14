@@ -12,7 +12,7 @@ from application.sources.hqcelebrity import HqCelebritySource
 from application.sources.theplace import ThePlaceSource
 from application.sources.carreck import CarreckSource
 from application.sources.hqdiesel import HqDiesel
-from superiorpics import SuperiorPicsSource
+from application.sources.superiorpics import SuperiorPicsSource
 
 
 sources = {
